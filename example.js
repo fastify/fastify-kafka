@@ -33,7 +33,7 @@ fastify
       fastify.close()
     })
 
-    fastify.kafka.consumer.consume()
+    fastify.kafka.consume()
 
     fastify.kafka.push({
       topic: 'test',
@@ -41,3 +41,7 @@ fastify
       key: 'testKey'
     })
   })
+
+process.once('SIGINT', function () {
+  fastify.close()
+})

@@ -37,7 +37,7 @@ test('Should add a kafka producer and consumer to the fastify instance', t => {
         fastify.close()
       })
 
-      fastify.kafka.consumer.consume()
+      fastify.kafka.consume()
 
       fastify.kafka.push({
         topic: 'test',

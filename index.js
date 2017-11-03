@@ -19,33 +19,31 @@ function fastifyKafka (fastify, opts, next) {
 }
 
 function buildProducer (fastify, opts, next) {
-  const log = fastify.logger
-  fastify.kafka.producer = new Producer(opts, log, next)
-  fastify.kafka.push = push
-
-  function push (message) {
-    fastify.kafka.producer.push(message)
-  }
+  const producer = new Producer(opts, fastify.logger, next)
+  fastify.kafka.producer = producer
+  fastify.kafka.push = producer.push.bind(producer)
 
   fastify.addHook('onClose', onClose)
   function onClose (fastify, done) {
-    fastify.kafka.producer.stop(done)
+    producer.stop(done)
   }
 }
 
 function buildConsumer (fastify, opts, next) {
-  const log = fastify.logger
-  fastify.kafka.consumer = new Consumer(opts, log, next)
+  const consumer = new Consumer(opts, fastify.logger, next)
+  fastify.kafka.consumer = consumer
+  fastify.kafka.consume = consumer.consume.bind(consumer)
   fastify.kafka.on = registerSubscription
 
   function registerSubscription (topic, cb) {
-    fastify.kafka.consumer.subscribe(topic)
-    fastify.kafka.consumer.on(topic, cb)
+    consumer.subscribe(topic)
+    consumer.on(topic, cb)
+    return consumer
   }
 
   fastify.addHook('onClose', onClose)
   function onClose (fastify, done) {
-    fastify.kafka.consumer.stop(done)
+    consumer.stop(done)
   }
 }
 
