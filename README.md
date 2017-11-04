@@ -1,6 +1,6 @@
 # fastify-kafka
 
-[![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat)](http://standardjs.com/)
+[![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat)](http://standardjs.com/)  [![Build Status](https://travis-ci.org/fastify/fastify-kafka.svg?branch=master)](https://travis-ci.org/fastify/fastify-kafka)
 
 Fastify plugin to interact with [Apache Kafka](http://kafka.apache.org/). Supports Kafka producer and consumer.  
 To achieve the best performances internally uses [`node-rdkafka`](https://github.com/Blizzard/node-rdkafka).
