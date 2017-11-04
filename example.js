@@ -1,24 +1,29 @@
 'use strict'
 
+const crypto = require('crypto')
 const fastify = require('fastify')({
   logger: {
     level: 'debug'
   }
 })
 
+const group = crypto.randomBytes(20).toString('hex')
+
 fastify
   .register(require('./'), {
     producer: {
       'metadata.broker.list': '127.0.0.1:9092',
-      'group.id': 'kafka1',
+      'group.id': group,
       'fetch.wait.max.ms': 10,
-      'fetch.error.backoff.ms': 50
+      'fetch.error.backoff.ms': 50,
+      'dr_cb': true
     },
     consumer: {
       'metadata.broker.list': '127.0.0.1:9092',
-      'group.id': 'kafka1',
+      'group.id': group,
       'fetch.wait.max.ms': 10,
-      'fetch.error.backoff.ms': 50
+      'fetch.error.backoff.ms': 50,
+      'auto.offset.reset': 'earliest'
     }
   })
   .after(err => {
@@ -27,10 +32,23 @@ fastify
     fastify.kafka.producer.on('error', err => { if (err) throw err })
     fastify.kafka.consumer.on('error', err => { if (err) throw err })
 
+    fastify.kafka.subscribe(['test', 'kafka'])
+
     fastify.kafka.on('test', (msg, commit) => {
       console.log(msg.value.toString())
       commit()
-      fastify.close()
+
+      fastify.kafka.push({
+        topic: 'kafka',
+        payload: 'proooova',
+        key: 'testKey'
+      })
+    })
+
+    fastify.kafka.on('kafka', (msg, commit) => {
+      console.log(msg.value.toString())
+      commit()
+      setImmediate(fastify.close)
     })
 
     fastify.kafka.consume()

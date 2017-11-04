@@ -33,13 +33,8 @@ function buildConsumer (fastify, opts, next) {
   const consumer = new Consumer(opts, fastify.logger, next)
   fastify.kafka.consumer = consumer
   fastify.kafka.consume = consumer.consume.bind(consumer)
-  fastify.kafka.on = registerSubscription
-
-  function registerSubscription (topic, cb) {
-    consumer.subscribe(topic)
-    consumer.on(topic, cb)
-    return consumer
-  }
+  fastify.kafka.subscribe = consumer.subscribe.bind(consumer)
+  fastify.kafka.on = consumer.on.bind(consumer)
 
   fastify.addHook('onClose', onClose)
   function onClose (fastify, done) {
