@@ -1,16 +1,29 @@
 {
   "name": "fastify-kafka",
   "version": "0.1.0",
-  "description": "",
+  "description": "Fastify plugin to interact with Apache Kafka.",
   "main": "index.js",
   "scripts": {
     "infra:start": "docker-compose up",
     "infra:stop": "docker-compose stop",
     "test": "standard && tap test.js"
   },
-  "keywords": [],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fastify/fastify-kafka"
+  },
+  "keywords": [
+    "fastify",
+    "kafka",
+    "events",
+    "sourcing"
+  ],
   "author": "Tomas Della Vedova - @delvedor (http://delved.org)",
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fastify/fastify-kafka/issues"
+  },
+  "homepage": "https://github.com/fastify/fastify-kafka#readme",
   "dependencies": {
     "fastify-plugin": "^0.1.1",
     "node-rdkafka": "^2.1.1"
