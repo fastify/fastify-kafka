@@ -1,0 +1,18 @@
+language: node_js
+
+node_js:
+  - "9"
+  - "8"
+  - "6"
+  - "4"
+
+before_script:
+  - docker-compose up
+
+after_script:
+  - docker-compose stop
+
+notifications:
+  email:
+    on_success: never
+    on_failure: always
