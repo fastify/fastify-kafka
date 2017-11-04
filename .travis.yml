@@ -6,11 +6,19 @@ node_js:
   - "6"
   - "4"
 
+services:
+  - docker
+
 before_script:
-  - docker-compose up
+  - docker-compose up -d
+  - sleep 60
+  - docker-compose ps
+
+script:
+  - npm test
 
 after_script:
-  - docker-compose stop
+  - docker-compose down
 
 notifications:
   email:
