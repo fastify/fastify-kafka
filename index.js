@@ -25,7 +25,7 @@ function buildProducer (fastify, opts, next) {
 
   fastify.addHook('onClose', onClose)
   function onClose (fastify, done) {
-    producer.stop(done)
+    fastify.kafka.producer.stop(done)
   }
 }
 
@@ -38,7 +38,7 @@ function buildConsumer (fastify, opts, next) {
 
   fastify.addHook('onClose', onClose)
   function onClose (fastify, done) {
-    consumer.stop(done)
+    fastify.kafka.consumer.stop(done)
   }
 }
 
