@@ -47,12 +47,13 @@ test('Should add a kafka producer and consumer to the fastify instance', t => {
       })
 
       fastify.kafka.consume()
-
-      fastify.kafka.push({
-        topic: 'test',
-        payload: 'hello world!',
-        key: 'testKey'
-      })
+      setTimeout(() => {
+        fastify.kafka.push({
+          topic: 'test',
+          payload: 'hello world!',
+          key: 'testKey'
+        })
+      }, 1000)
     })
 })
 
@@ -93,10 +94,12 @@ test('Register to multiple topics', t => {
 
       fastify.kafka.consume()
 
-      fastify.kafka.push({
-        topic: 'test',
-        payload: 'hello world!',
-        key: 'testkey'
-      })
+      setTimeout(() => {
+        fastify.kafka.push({
+          topic: 'test',
+          payload: 'hello world!',
+          key: 'testKey'
+        })
+      }, 1000)
     })
 })

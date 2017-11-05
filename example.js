@@ -53,11 +53,13 @@ fastify
 
     fastify.kafka.consume()
 
-    fastify.kafka.push({
-      topic: 'test',
-      payload: 'hello world!',
-      key: 'testKey'
-    })
+    setTimeout(() => {
+      fastify.kafka.push({
+        topic: 'test',
+        payload: 'hello world!',
+        key: 'testKey'
+      })
+    }, 1000)
   })
 
 process.once('SIGINT', function () {
