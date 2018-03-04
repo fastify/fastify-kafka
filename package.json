@@ -25,12 +25,12 @@
   },
   "homepage": "https://github.com/fastify/fastify-kafka#readme",
   "dependencies": {
-    "fastify-plugin": "^0.1.1",
+    "fastify-plugin": "^0.2.2",
     "node-rdkafka": "^2.1.1"
   },
   "devDependencies": {
-    "fastify": "^0.32.0",
-    "standard": "^10.0.3",
-    "tap": "^10.7.2"
+    "fastify": "^0.43.0",
+    "standard": "^11.0.0",
+    "tap": "^11.1.1"
   }
 }
