@@ -121,20 +121,18 @@ test('multiple topics', t => {
       t.error(err)
 
       producerFastify.kafka.producer.on('error', t.fail)
-      setTimeout(() => {
-        producerFastify.kafka.push({
-          topic: topicName1,
-          payload: 'topic1',
-          key: 'testKey'
-        })
-        producerFastify.kafka.push({
-          topic: topicName2,
-          payload: 'topic2',
-          key: 'kafkaKey'
-        })
+      producerFastify.kafka.push({
+        topic: topicName1,
+        payload: 'topic1',
+        key: 'testKey'
+      })
+      producerFastify.kafka.push({
+        topic: topicName2,
+        payload: 'topic2',
+        key: 'kafkaKey'
+      })
 
-        t.ok(true)
-      }, 1000)
+      t.ok(true)
     })
 })
 
