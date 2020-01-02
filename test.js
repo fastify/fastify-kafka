@@ -18,7 +18,8 @@ const defaultOptions = {
   consumer: {
     'metadata.broker.list': '127.0.0.1:9092',
     'fetch.wait.max.ms': 10,
-    'fetch.error.backoff.ms': 50
+    'fetch.error.backoff.ms': 50,
+    'auto.offset.reset': 'beginning'
   }
 }
 
