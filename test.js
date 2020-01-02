@@ -141,7 +141,7 @@ test('multiple topics', t => {
 function generateGroupId () {
   return crypto.randomBytes(20).toString('hex')
 }
-
+// Only for test purpose
 function copyPlainObject (obj) {
   return JSON.parse(JSON.stringify(obj))
 }
