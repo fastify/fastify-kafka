@@ -64,15 +64,13 @@ test('communication', t => {
       t.error(err)
 
       producerFastify.kafka.producer.on('error', t.fail)
-      setTimeout(() => {
-        producerFastify.kafka.push({
-          topic: topicName,
-          payload: 'hello world!',
-          key: 'testKey'
-        })
+      producerFastify.kafka.push({
+        topic: topicName,
+        payload: 'hello world!',
+        key: 'testKey'
+      })
 
-        t.ok(true)
-      }, 1000)
+      t.ok(true)
     })
 })
 
