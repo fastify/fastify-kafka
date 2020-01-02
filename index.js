@@ -42,4 +42,4 @@ function buildConsumer (fastify, opts, next) {
   }
 }
 
-module.exports = fp(fastifyKafka, '>=1.0.0')
+module.exports = fp(fastifyKafka, '>=2.0.0')
