@@ -18,7 +18,9 @@ const defaultOptions = {
   consumer: {
     'metadata.broker.list': '127.0.0.1:9092',
     'fetch.wait.max.ms': 10,
-    'fetch.error.backoff.ms': 50,
+    'fetch.error.backoff.ms': 50
+  },
+  consumerTopicConf: {
     'auto.offset.reset': 'beginning'
   }
 }
@@ -29,6 +31,8 @@ test('communication', t => {
   const group = generateGroupId()
   options.consumer['group.id'] = group
   options.producer['group.id'] = group
+
+  const topicName = generateTopicName()
 
   const producerFastify = Fastify({ logger })
   const consumerFastify = Fastify({ logger })
@@ -42,9 +46,9 @@ test('communication', t => {
       t.error(err)
 
       consumerFastify.kafka.consumer.on('error', t.fail)
-      consumerFastify.kafka.subscribe('test')
+      consumerFastify.kafka.subscribe(topicName)
 
-      consumerFastify.kafka.on('test', (msg, commit) => {
+      consumerFastify.kafka.on(topicName, (msg, commit) => {
         t.strictEqual(msg.value.toString(), 'hello world!')
         commit()
 
@@ -62,7 +66,7 @@ test('communication', t => {
       producerFastify.kafka.producer.on('error', t.fail)
       setTimeout(() => {
         producerFastify.kafka.push({
-          topic: 'test',
+          topic: topicName,
           payload: 'hello world!',
           key: 'testKey'
         })
@@ -79,6 +83,9 @@ test('multiple topics', t => {
   options.consumer['group.id'] = group
   options.producer['group.id'] = group
 
+  const topicName1 = generateTopicName()
+  const topicName2 = generateTopicName()
+
   const producerFastify = Fastify({ logger })
   const consumerFastify = Fastify({ logger })
 
@@ -91,18 +98,16 @@ test('multiple topics', t => {
       t.error(err)
 
       consumerFastify.kafka.consumer.on('error', t.fail)
-      consumerFastify.kafka.subscribe(['test', 'kafka'])
+      consumerFastify.kafka.subscribe([topicName1, topicName2])
 
-      consumerFastify.kafka.on('test', (msg, commit) => {
-        console.log('FROM TEST')
-        t.strictEqual(msg.value.toString(), 'test')
+      consumerFastify.kafka.on(topicName1, (msg, commit) => {
+        t.strictEqual(msg.value.toString(), 'topic1')
         commit()
         t.ok(true)
       })
 
-      consumerFastify.kafka.on('kafka', (msg, commit) => {
-        console.log('FROM KAFKA')
-        t.strictEqual(msg.value.toString(), 'kafka')
+      consumerFastify.kafka.on(topicName2, (msg, commit) => {
+        t.strictEqual(msg.value.toString(), 'topic2')
         commit()
         t.ok(true)
       })
@@ -118,13 +123,13 @@ test('multiple topics', t => {
       producerFastify.kafka.producer.on('error', t.fail)
       setTimeout(() => {
         producerFastify.kafka.push({
-          topic: 'test',
-          payload: 'test',
+          topic: topicName1,
+          payload: 'topic1',
           key: 'testKey'
         })
         producerFastify.kafka.push({
-          topic: 'kafka',
-          payload: 'kafka',
+          topic: topicName2,
+          payload: 'topic2',
           key: 'kafkaKey'
         })
 
@@ -133,94 +138,14 @@ test('multiple topics', t => {
     })
 })
 
-/*
-test('Should add a kafka producer and consumer to the fastify instance', t => {
-  t.plan(2)
-
-  const fastify = Fastify()
-  const group = crypto.randomBytes(20).toString('hex')
-  options.producer['group.id'] = group
-  options.consumer['group.id'] = group
-
-  fastify
-    .register(fastifyKafka, options)
-    .after(err => {
-      t.error(err)
-
-      fastify.kafka.producer.on('error', t.fail)
-      fastify.kafka.consumer.on('error', t.fail)
-
-      fastify.kafka.subscribe('test')
-
-      fastify.kafka.on('test', (msg, commit) => {
-        t.strictEqual(msg.value.toString(), 'hello world!')
-        commit()
-        fastify.close()
-      })
-
-      fastify.kafka.consume()
-      setTimeout(() => {
-        fastify.kafka.push({
-          topic: 'test',
-          payload: 'hello world!',
-          key: 'testKey'
-        })
-      }, 1000)
-    })
-})
-
-test('Register to multiple topics', t => {
-  t.plan(3)
-
-  const fastify = Fastify()
-  const group = crypto.randomBytes(20).toString('hex')
-  options.producer['group.id'] = group
-  options.consumer['group.id'] = group
-
-  fastify
-    .register(fastifyKafka, options)
-    .after(err => {
-      t.error(err)
-
-      fastify.kafka.producer.on('error', t.fail)
-      fastify.kafka.consumer.on('error', t.fail)
-
-      fastify.kafka.subscribe(['test', 'kafka'])
-
-      fastify.kafka.on('test', (msg, commit) => {
-        t.strictEqual(msg.value.toString(), 'hello world!')
-        commit()
-
-        fastify.kafka.push({
-          topic: 'kafka',
-          payload: 'winter is coming',
-          key: 'testKey'
-        })
-      })
-
-      fastify.kafka.on('kafka', (msg, commit) => {
-        t.strictEqual(msg.value.toString(), 'winter is coming')
-        commit()
-        fastify.close()
-      })
-
-      fastify.kafka.consume()
-
-      setTimeout(() => {
-        fastify.kafka.push({
-          topic: 'test',
-          payload: 'hello world!',
-          key: 'testKey'
-        })
-      }, 1000)
-    })
-})
-*/
-
 function generateGroupId () {
-  const group = crypto.randomBytes(20).toString('hex')
-  return group
+  return crypto.randomBytes(20).toString('hex')
 }
+
 function copyPlainObject (obj) {
   return JSON.parse(JSON.stringify(obj))
+}
+
+function generateTopicName () {
+  return crypto.randomBytes(5).toString('hex')
 }

@@ -8,11 +8,11 @@ function fastifyKafka (fastify, opts, next) {
   fastify.decorate('kafka', {})
 
   if (opts.producer) {
-    fastify.register(fp(buildProducer), opts.producer)
+    fastify.register(fp(buildProducer), opts)
   }
 
   if (opts.consumer) {
-    fastify.register(fp(buildConsumer), opts.consumer)
+    fastify.register(fp(buildConsumer), opts)
   }
 
   next()
@@ -30,7 +30,7 @@ function buildProducer (fastify, opts, next) {
 }
 
 function buildConsumer (fastify, opts, next) {
-  const consumer = new Consumer(opts, fastify.logger, next)
+  const consumer = new Consumer(opts.consumer, fastify.logger, next, opts.consumerTopicConf)
   fastify.kafka.consumer = consumer
   fastify.kafka.consume = consumer.consume.bind(consumer)
   fastify.kafka.subscribe = consumer.subscribe.bind(consumer)
