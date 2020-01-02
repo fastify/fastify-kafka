@@ -19,7 +19,7 @@ function fastifyKafka (fastify, opts, next) {
 }
 
 function buildProducer (fastify, opts, next) {
-  const producer = new Producer(opts, fastify.logger, next)
+  const producer = new Producer(opts.producer, fastify.logger, next, opts.producerTopicConf)
   fastify.kafka.producer = producer
   fastify.kafka.push = producer.push.bind(producer)
 
