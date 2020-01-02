@@ -19,7 +19,7 @@ function fastifyKafka (fastify, opts, next) {
 }
 
 function buildProducer (fastify, opts, next) {
-  const producer = new Producer(opts.producer, fastify.logger, next, opts.producerTopicConf)
+  const producer = new Producer(opts.producer, fastify.log, next, opts.producerTopicConf)
   fastify.kafka.producer = producer
   fastify.kafka.push = producer.push.bind(producer)
 
@@ -30,7 +30,7 @@ function buildProducer (fastify, opts, next) {
 }
 
 function buildConsumer (fastify, opts, next) {
-  const consumer = new Consumer(opts.consumer, fastify.logger, next, opts.consumerTopicConf)
+  const consumer = new Consumer(opts.consumer, fastify.log, next, opts.consumerTopicConf)
   fastify.kafka.consumer = consumer
   fastify.kafka.consume = consumer.consume.bind(consumer)
   fastify.kafka.subscribe = consumer.subscribe.bind(consumer)
@@ -42,4 +42,4 @@ function buildConsumer (fastify, opts, next) {
   }
 }
 
-module.exports = fp(fastifyKafka, '>=0.30.0')
+module.exports = fp(fastifyKafka, '>=1.0.0')

@@ -26,7 +26,7 @@ const defaultOptions = {
 }
 
 test('communication', t => {
-  t.plan(5)
+  t.plan(7)
   const options = copyPlainObject(defaultOptions)
   const group = generateGroupId()
   options.consumer['group.id'] = group
@@ -72,10 +72,18 @@ test('communication', t => {
 
       t.ok(true)
     })
+
+  producerFastify.ready(err => {
+    t.ifError(err)
+
+    consumerFastify.ready(err => {
+      t.ifError(err)
+    })
+  })
 })
 
 test('multiple topics', t => {
-  t.plan(7)
+  t.plan(9)
   const options = copyPlainObject(defaultOptions)
   const group = generateGroupId()
   options.consumer['group.id'] = group
@@ -132,6 +140,14 @@ test('multiple topics', t => {
 
       t.ok(true)
     })
+
+  producerFastify.ready(err => {
+    t.ifError(err)
+
+    consumerFastify.ready(err => {
+      t.ifError(err)
+    })
+  })
 })
 
 function generateGroupId () {
