@@ -132,7 +132,6 @@ test('multiple topics', t => {
     })
 })
 
-
 /*
 test('Should add a kafka producer and consumer to the fastify instance', t => {
   t.plan(2)
@@ -217,10 +216,10 @@ test('Register to multiple topics', t => {
 })
 */
 
-function generateGroupId() {
+function generateGroupId () {
   const group = crypto.randomBytes(20).toString('hex')
   return group
 }
-function copyPlainObject(obj) {
+function copyPlainObject (obj) {
   return JSON.parse(JSON.stringify(obj))
 }
