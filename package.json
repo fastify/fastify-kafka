@@ -6,7 +6,7 @@
   "scripts": {
     "infra:start": "docker-compose up",
     "infra:stop": "docker-compose stop",
-    "test": "standard && tap test.js"
+    "test": "standard && tap -j=1 test.js"
   },
   "repository": {
     "type": "git",

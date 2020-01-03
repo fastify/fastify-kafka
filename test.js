@@ -150,6 +150,75 @@ test('multiple topics', t => {
   })
 })
 
+test('consume callback', t => {
+  const options = copyPlainObject(defaultOptions)
+  const group = generateGroupId()
+  options.consumer['group.id'] = group
+  options.producer['group.id'] = group
+  options.consumer['event_cb'] = true
+
+  const topicName = generateTopicName()
+
+  const producerFastify = Fastify({ logger })
+  const consumerFastify = Fastify({ logger })
+
+  t.tearDown(() => producerFastify.close())
+  t.tearDown(() => consumerFastify.close())
+
+  consumerFastify
+    .register(fastifyKafka, {...options, producer: undefined})
+    .after(err => {
+      t.error(err)
+
+      consumerFastify.kafka.consumer.on('error', t.fail)
+      consumerFastify.kafka.subscribe(topicName)
+
+      consumerFastify.kafka.on(topicName, t.fail)
+
+      function onConsume (err, messages) {
+        t.ifError(err)
+
+        if (messages && messages.length > 0) {
+          t.equal(messages.length, 1)
+          t.match(messages[0], {
+            topic: topicName,
+            value: Buffer.from('hello world!'),
+            key: Buffer.from('testKey')
+          })
+          t.end()
+          return
+        }
+
+        setTimeout(() => consumerFastify.kafka.consume(10, onConsume), 10)
+      }
+
+      consumerFastify.kafka.consume(10, onConsume)
+    })
+
+  producerFastify
+    .register(fastifyKafka, {...options, consumer: undefined})
+    .after(err => {
+      t.error(err)
+
+      producerFastify.kafka.producer.on('error', t.fail)
+      producerFastify.kafka.push({
+        topic: topicName,
+        payload: 'hello world!',
+        key: 'testKey'
+      })
+
+      t.ok(true)
+    })
+
+  producerFastify.ready(err => {
+    t.ifError(err)
+
+    consumerFastify.ready(err => {
+      t.ifError(err)
+    })
+  })
+})
+
 function generateGroupId () {
   return crypto.randomBytes(20).toString('hex')
 }
