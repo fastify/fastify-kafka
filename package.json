@@ -6,7 +6,7 @@
   "scripts": {
     "infra:start": "docker-compose up",
     "infra:stop": "docker-compose stop",
-    "test": "standard && tap test.js"
+    "test": "standard && tap -j=1 test.js"
   },
   "repository": {
     "type": "git",
@@ -29,7 +29,7 @@
     "node-rdkafka": "^2.1.1"
   },
   "devDependencies": {
-    "fastify": "^0.32.0",
+    "fastify": "^2.0.0",
     "standard": "^10.0.3",
     "tap": "^10.7.2"
   }
