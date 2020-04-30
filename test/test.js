@@ -4,16 +4,12 @@ const t = require('tap')
 const test = t.test
 const crypto = require('crypto')
 const Fastify = require('fastify')
-const fastifyKafka = require('./')
-
-const logger = { level: 'trace' }
+const fastifyKafka = require('..')
 
 const defaultOptions = {
   producer: {
     'metadata.broker.list': '127.0.0.1:9092',
-    'fetch.wait.max.ms': 10,
-    'fetch.error.backoff.ms': 50,
-    'dr_cb': true
+    dr_cb: true
   },
   consumer: {
     'metadata.broker.list': '127.0.0.1:9092',
@@ -22,6 +18,9 @@ const defaultOptions = {
   },
   consumerTopicConf: {
     'auto.offset.reset': 'beginning'
+  },
+  metadataOptions: {
+    timeout: 2000
   }
 }
 
@@ -30,18 +29,17 @@ test('communication', t => {
   const options = copyPlainObject(defaultOptions)
   const group = generateGroupId()
   options.consumer['group.id'] = group
-  options.producer['group.id'] = group
 
   const topicName = generateTopicName()
 
-  const producerFastify = Fastify({ logger })
-  const consumerFastify = Fastify({ logger })
+  const producerFastify = Fastify()
+  const consumerFastify = Fastify()
 
   t.tearDown(() => producerFastify.close())
   t.tearDown(() => consumerFastify.close())
 
   consumerFastify
-    .register(fastifyKafka, {...options, producer: undefined})
+    .register(fastifyKafka, { ...options, producer: undefined })
     .after(err => {
       t.error(err)
 
@@ -59,7 +57,7 @@ test('communication', t => {
     })
 
   producerFastify
-    .register(fastifyKafka, {...options, consumer: undefined})
+    .register(fastifyKafka, { ...options, consumer: undefined })
     .after(err => {
       t.error(err)
 
@@ -87,19 +85,18 @@ test('multiple topics', t => {
   const options = copyPlainObject(defaultOptions)
   const group = generateGroupId()
   options.consumer['group.id'] = group
-  options.producer['group.id'] = group
 
   const topicName1 = generateTopicName()
   const topicName2 = generateTopicName()
 
-  const producerFastify = Fastify({ logger })
-  const consumerFastify = Fastify({ logger })
+  const producerFastify = Fastify()
+  const consumerFastify = Fastify()
 
   t.tearDown(() => producerFastify.close())
   t.tearDown(() => consumerFastify.close())
 
   consumerFastify
-    .register(fastifyKafka, {...options, producer: undefined})
+    .register(fastifyKafka, { ...options, producer: undefined })
     .after(err => {
       t.error(err)
 
@@ -122,7 +119,7 @@ test('multiple topics', t => {
     })
 
   producerFastify
-    .register(fastifyKafka, {...options, consumer: undefined})
+    .register(fastifyKafka, { ...options, consumer: undefined })
     .after(err => {
       t.error(err)
 
@@ -154,19 +151,18 @@ test('consume callback', t => {
   const options = copyPlainObject(defaultOptions)
   const group = generateGroupId()
   options.consumer['group.id'] = group
-  options.producer['group.id'] = group
-  options.consumer['event_cb'] = true
+  options.consumer.event_cb = true
 
   const topicName = generateTopicName()
 
-  const producerFastify = Fastify({ logger })
-  const consumerFastify = Fastify({ logger })
+  const producerFastify = Fastify()
+  const consumerFastify = Fastify()
 
   t.tearDown(() => producerFastify.close())
   t.tearDown(() => consumerFastify.close())
 
   consumerFastify
-    .register(fastifyKafka, {...options, producer: undefined})
+    .register(fastifyKafka, { ...options, producer: undefined })
     .after(err => {
       t.error(err)
 
@@ -196,7 +192,7 @@ test('consume callback', t => {
     })
 
   producerFastify
-    .register(fastifyKafka, {...options, consumer: undefined})
+    .register(fastifyKafka, { ...options, consumer: undefined })
     .after(err => {
       t.error(err)
 
