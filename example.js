@@ -13,16 +13,15 @@ fastify
   .register(require('./'), {
     producer: {
       'metadata.broker.list': '127.0.0.1:9092',
-      'group.id': group,
-      'fetch.wait.max.ms': 10,
-      'fetch.error.backoff.ms': 50,
-      'dr_cb': true
+      dr_cb: true
     },
     consumer: {
       'metadata.broker.list': '127.0.0.1:9092',
       'group.id': group,
       'fetch.wait.max.ms': 10,
-      'fetch.error.backoff.ms': 50,
+      'fetch.error.backoff.ms': 50
+    },
+    consumerTopicConf: {
       'auto.offset.reset': 'earliest'
     }
   })

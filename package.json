@@ -3,10 +3,11 @@
   "version": "0.2.0",
   "description": "Fastify plugin to interact with Apache Kafka.",
   "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
     "infra:start": "docker-compose up",
     "infra:stop": "docker-compose stop",
-    "test": "standard && tap -j=1 test.js"
+    "test": "standard && tsd && tap -j=1 test/*.js"
   },
   "repository": {
     "type": "git",
@@ -25,12 +26,17 @@
   },
   "homepage": "https://github.com/fastify/fastify-kafka#readme",
   "dependencies": {
-    "fastify-plugin": "^0.1.1",
-    "node-rdkafka": "^2.1.1"
+    "fastify-plugin": "^2.0.0",
+    "node-rdkafka": "^2.8.1"
   },
   "devDependencies": {
-    "fastify": "^2.0.0",
-    "standard": "^10.0.3",
-    "tap": "^10.7.2"
+    "abstract-logging": "2.0.0",
+    "fastify": "^3.0.0-rc.2",
+    "standard": "^14.3.3",
+    "tap": "^14.10.7",
+    "tsd": "^0.11.0"
+  },
+  "tsd": {
+    "directory": "test"
   }
 }
