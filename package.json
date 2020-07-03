@@ -34,7 +34,7 @@
     "fastify": "^3.0.0-rc.2",
     "standard": "^14.3.3",
     "tap": "^14.10.7",
-    "tsd": "^0.11.0"
+    "tsd": "^0.12.1"
   },
   "tsd": {
     "directory": "test"
