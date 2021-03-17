@@ -8,24 +8,27 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
-
+  test:
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
-        node-version: [12.x, 14.x, 15.x]
-
+        node-version: [10.x, 12.x, 14.x]
+    services:
+      kafka:
+        image: confluentinc/cp-kafka
+        ports:
+        - 9092:9092
     steps:
     - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v2.1.5
       with:
         node-version: ${{ matrix.node-version }}
     - name: Install Dependencies
       run: npm install --ignore-scripts
     - name: Test
       run: npm test
+
 
   automerge:
       needs: test
