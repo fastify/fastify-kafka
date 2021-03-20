@@ -13,13 +13,15 @@ jobs:
     strategy:
       matrix:
         node-version: [10.x, 12.x, 14.x]
-    services:
-      kafka:
-        image: confluentinc/cp-kafka
-        ports:
-        - 9092:9092
+  #   services:
+  #     kafka:
+  #       image: confluentinc/cp-kafka
+  #       ports:
+  #       - 9092:9092
     steps:
     - uses: actions/checkout@v2
+    - name: Build the stack
+        run: docker-compose up -d
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v2.1.5
       with:
