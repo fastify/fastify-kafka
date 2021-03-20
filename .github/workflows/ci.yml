@@ -13,17 +13,17 @@ jobs:
       matrix:
         node-version: [10.x, 12.x, 14.x]
     steps:
-    - name: Build kafka
-      uses: actions/checkout@v2
-      run: docker-compose up
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2.1.5
-      with:
-        node-version: ${{ matrix.node-version }}
-    - name: Install Dependencies
-      run: npm install --ignore-scripts
-    - name: Test
-      run: npm test
+      - uses: actions/checkout@v2
+      - name: Build the Kafka
+          run: docker-compose up -d
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2.1.5
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install Dependencies
+        run: npm install --ignore-scripts
+      - name: Test
+        run: npm test
 
 
   automerge:
