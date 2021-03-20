@@ -21,8 +21,9 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Install Dependencies
         run: npm install --ignore-scripts
-      - name: Test
+      - name: Build container
         run: docker-compose up -d
+      - name: Test
         run: npm test
 
 
