@@ -13,13 +13,13 @@ jobs:
       matrix:
         node-version: [10.x, 12.x, 14.x]
     steps:
-    - name: Build kafka
-      uses: actions/checkout@v2
-      run: docker-compose up
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v2.1.5
       with:
         node-version: ${{ matrix.node-version }}
+    - name: Build kafka
+      uses: actions/checkout@v2
+      run: docker-compose up -d
     - name: Install Dependencies
       run: npm install --ignore-scripts
     - name: Test
