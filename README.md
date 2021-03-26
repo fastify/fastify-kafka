@@ -74,7 +74,7 @@ This module exposes the following apis:
 ## Acknowledgements
 
 This project is kindly sponsored by:
-- [LetzDoIt](http://www.letzdoitapp.com/)
+- [LetzDoIt](https://www.letzdoitapp.com/)
 
 ## License
 
