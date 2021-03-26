@@ -1,40 +1,44 @@
-
 name: CI
 
 on:
   push:
-    branches: [ master ]
+    paths-ignore:
+      - 'docs/**'
+      - '*.md'
   pull_request:
-    branches: [ master ]
+    paths-ignore:
+      - 'docs/**'
+      - '*.md'
 
 jobs:
   test:
     runs-on: ubuntu-latest
+
     strategy:
       matrix:
         node-version: [10.x, 12.x, 14.x]
-    services:
-      kafka:
-        image: confluentinc/cp-kafka
-        ports:
-        - 9092:9092
-    steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2.1.5
-      with:
-        node-version: ${{ matrix.node-version }}
-    - name: Install Dependencies
-      run: npm install --ignore-scripts
-    - name: Test
-      run: npm test
 
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js
+        uses: actions/setup-node@v2.1.5
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install Dependencies
+        run: |
+          npm install --ignore-scripts
+
+      - name: Run Tests
+        run: |
+          npm run infra:start
+          npm run test
 
   automerge:
-      needs: test
-      runs-on: ubuntu-latest
-      steps:
-        - uses: fastify/github-action-merge-dependabot@v2.0.0
-          if: ${{ github.actor == 'dependabot[bot]' && github.event_name == 'pull_request' }}
-          with:
-            github-token: ${{secrets.github_token}}
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: fastify/github-action-merge-dependabot@v2.0.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
