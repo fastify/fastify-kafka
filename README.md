@@ -60,7 +60,7 @@ fastify.listen(3000, err => {
  ```
 
 ### API
-This module exposes the following apis:
+This module exposes the following APIs:
 ##### Producer
 - `fastify.kafka.producer`: the producer instance
 - `fastify.kafka.push`: utility to produce a new message
