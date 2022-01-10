@@ -5,16 +5,21 @@ const test = t.test
 const crypto = require('crypto')
 const Fastify = require('fastify')
 const fastifyKafka = require('..')
+const defaultExport = require('..').default
+const { fastifyKafka: namedExport } = require('..')
 
 const defaultOptions = {
   producer: {
     'metadata.broker.list': '127.0.0.1:9092',
+    'allow.auto.create.topics': true,
     dr_cb: true
   },
   consumer: {
     'metadata.broker.list': '127.0.0.1:9092',
     'fetch.wait.max.ms': 10,
-    'fetch.error.backoff.ms': 50
+    'fetch.error.backoff.ms': 50,
+    'topic.metadata.refresh.interval.ms': 100,
+    'allow.auto.create.topics': true
   },
   consumerTopicConf: {
     'auto.offset.reset': 'beginning'
@@ -23,6 +28,25 @@ const defaultOptions = {
     timeout: 2000
   }
 }
+
+test('export', function (t) {
+  t.plan(3)
+
+  t.test('module export', function (t) {
+    t.plan(1)
+    t.equal(typeof fastifyKafka, 'function')
+  })
+
+  t.test('default export', function (t) {
+    t.plan(1)
+    t.equal(typeof defaultExport, 'function')
+  })
+
+  t.test('named export', function (t) {
+    t.plan(1)
+    t.equal(typeof namedExport, 'function')
+  })
+})
 
 test('communication', t => {
   t.plan(7)
@@ -35,8 +59,8 @@ test('communication', t => {
   const producerFastify = Fastify()
   const consumerFastify = Fastify()
 
-  t.tearDown(() => producerFastify.close())
-  t.tearDown(() => consumerFastify.close())
+  t.teardown(() => producerFastify.close())
+  t.teardown(() => consumerFastify.close())
 
   consumerFastify
     .register(fastifyKafka, { ...options, producer: undefined })
@@ -47,7 +71,7 @@ test('communication', t => {
       consumerFastify.kafka.subscribe(topicName)
 
       consumerFastify.kafka.on(topicName, (msg, commit) => {
-        t.strictEqual(msg.value.toString(), 'hello world!')
+        t.equal(msg.value.toString(), 'hello world!')
         commit()
 
         t.ok(true)
@@ -72,10 +96,10 @@ test('communication', t => {
     })
 
   producerFastify.ready(err => {
-    t.ifError(err)
+    t.error(err)
 
     consumerFastify.ready(err => {
-      t.ifError(err)
+      t.error(err)
     })
   })
 })
@@ -92,8 +116,8 @@ test('multiple topics', t => {
   const producerFastify = Fastify()
   const consumerFastify = Fastify()
 
-  t.tearDown(() => producerFastify.close())
-  t.tearDown(() => consumerFastify.close())
+  t.teardown(() => producerFastify.close())
+  t.teardown(() => consumerFastify.close())
 
   consumerFastify
     .register(fastifyKafka, { ...options, producer: undefined })
@@ -104,13 +128,13 @@ test('multiple topics', t => {
       consumerFastify.kafka.subscribe([topicName1, topicName2])
 
       consumerFastify.kafka.on(topicName1, (msg, commit) => {
-        t.strictEqual(msg.value.toString(), 'topic1')
+        t.equal(msg.value.toString(), 'topic1')
         commit()
         t.ok(true)
       })
 
       consumerFastify.kafka.on(topicName2, (msg, commit) => {
-        t.strictEqual(msg.value.toString(), 'topic2')
+        t.equal(msg.value.toString(), 'topic2')
         commit()
         t.ok(true)
       })
@@ -139,10 +163,10 @@ test('multiple topics', t => {
     })
 
   producerFastify.ready(err => {
-    t.ifError(err)
+    t.error(err)
 
     consumerFastify.ready(err => {
-      t.ifError(err)
+      t.error(err)
     })
   })
 })
@@ -158,8 +182,8 @@ test('consume callback', t => {
   const producerFastify = Fastify()
   const consumerFastify = Fastify()
 
-  t.tearDown(() => producerFastify.close())
-  t.tearDown(() => consumerFastify.close())
+  t.teardown(() => producerFastify.close())
+  t.teardown(() => consumerFastify.close())
 
   consumerFastify
     .register(fastifyKafka, { ...options, producer: undefined })
@@ -171,24 +195,18 @@ test('consume callback', t => {
 
       consumerFastify.kafka.on(topicName, t.fail)
 
-      function onConsume (err, messages) {
-        t.ifError(err)
+      function onConsume (err, message) {
+        t.error(err)
+        t.match(message, {
+          topic: topicName,
+          value: Buffer.from('hello world!'),
+          key: Buffer.from('testKey')
+        })
 
-        if (messages && messages.length > 0) {
-          t.equal(messages.length, 1)
-          t.match(messages[0], {
-            topic: topicName,
-            value: Buffer.from('hello world!'),
-            key: Buffer.from('testKey')
-          })
-          t.end()
-          return
-        }
-
-        setTimeout(() => consumerFastify.kafka.consume(10, onConsume), 10)
+        t.end()
       }
 
-      consumerFastify.kafka.consume(10, onConsume)
+      consumerFastify.kafka.consume(onConsume)
     })
 
   producerFastify
@@ -207,10 +225,10 @@ test('consume callback', t => {
     })
 
   producerFastify.ready(err => {
-    t.ifError(err)
+    t.error(err)
 
     consumerFastify.ready(err => {
-      t.ifError(err)
+      t.error(err)
     })
   })
 })

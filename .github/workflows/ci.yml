@@ -14,9 +14,9 @@ jobs:
     strategy:
       matrix:
         node-version:
-          - 10
-          - 12
-          - 14
+          # - 10
+          # - 12
+          # - 14
           - 16
     steps:
       - uses: actions/checkout@v2
@@ -24,12 +24,14 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
+      - name: Start Infrastructure
+        run: |
+          docker-compose up -d
       - name: Install Dependencies
         run: |
-          npm install --ignore-scripts
+          npm install
       - name: Run Tests
         run: |
-          npm run infra:start
           npm test
   automerge:
     needs: test

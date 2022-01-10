@@ -41,7 +41,7 @@ fastify
 
 fastify.post('/data', (req, reply) => {
   fastify.kafka.push({
-    topic: 'api-data',
+    topic: 'updates',
     payload: req.body,
     key: 'dataKey'
   })

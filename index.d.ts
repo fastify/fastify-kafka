@@ -1,5 +1,5 @@
 
-import { FastifyPlugin } from 'fastify';
+import { FastifyPluginCallback } from 'fastify';
 import { ConsumerGlobalConfig, ConsumerTopicConfig, KafkaConsumer, Message, MetadataOptions, Producer, ProducerGlobalConfig, ProducerTopicConfig } from 'node-rdkafka';
 
 declare module 'fastify' {
@@ -37,6 +37,6 @@ declare namespace fastifyKafka {
     }
 }
 
-declare const fastifyKafka: FastifyPlugin<fastifyKafka.FastifyKafkaOptions>;
+export const fastifyKafka: FastifyPluginCallback<fastifyKafka.FastifyKafkaOptions>;
 
 export default fastifyKafka;
