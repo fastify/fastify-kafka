@@ -1,6 +1,15 @@
 
 import { FastifyPluginCallback } from 'fastify';
-import { ConsumerGlobalConfig, ConsumerTopicConfig, KafkaConsumer, Message, MetadataOptions, Producer, ProducerGlobalConfig, ProducerTopicConfig } from 'node-rdkafka';
+import { 
+    ConsumerGlobalConfig, 
+    ConsumerTopicConfig, 
+    KafkaConsumer, 
+    Message, 
+    MetadataOptions, 
+    Producer, 
+    ProducerGlobalConfig, 
+    ProducerTopicConfig 
+} from 'node-rdkafka';
 
 declare module 'fastify' {
     interface FastifyKafkaMessage extends Pick<Message, 'topic' | 'partition' | 'key'> {
