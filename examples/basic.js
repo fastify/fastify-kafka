@@ -7,7 +7,7 @@ const fastify = require('fastify')({
   }
 })
 
-const group = crypto.randomBytes(20).toString('hex')
+const groupId = crypto.randomBytes(20).toString('hex')
 
 fastify
   .register(require('..'), {
@@ -17,7 +17,7 @@ fastify
     },
     consumer: {
       'metadata.broker.list': '127.0.0.1:9092',
-      'group.id': group,
+      'group.id': groupId,
       'fetch.wait.max.ms': 10,
       'fetch.error.backoff.ms': 50
     },

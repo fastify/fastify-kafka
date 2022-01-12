@@ -7,8 +7,10 @@
   "scripts": {
     "infra:start": "docker-compose up -d",
     "infra:stop": "docker-compose stop",
-    "lint": "standard --fix",
-    "test": "standard && tsd && tap test/*.js"
+    "lint": "standard",
+    "lint:fix": "standard --fix",
+    "test": "npm run lint && tap \"test/*.js\" && npm run test:typescript",
+    "test:typescript": "tsd"
   },
   "repository": {
     "type": "git",

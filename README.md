@@ -59,7 +59,7 @@ fastify.listen(3000, err => {
 })
  ```
  
-for more examples please take a look at the [examples directory](./examples)
+For more examples on how to use this plugin you can take a look at the [examples directory](./examples).
 
 ### API
 This module exposes the following APIs:
