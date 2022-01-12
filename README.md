@@ -58,6 +58,8 @@ fastify.listen(3000, err => {
   console.log(`server listening on ${fastify.server.address().port}`)
 })
  ```
+ 
+for more examples please take a look at the [examples directory](./examples)
 
 ### API
 This module exposes the following APIs:

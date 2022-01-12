@@ -10,7 +10,7 @@ const fastify = require('fastify')({
 const group = crypto.randomBytes(20).toString('hex')
 
 fastify
-  .register(require('./'), {
+  .register(require('..'), {
     producer: {
       'metadata.broker.list': '127.0.0.1:9092',
       dr_cb: true
