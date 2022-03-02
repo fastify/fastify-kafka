@@ -42,5 +42,5 @@ test('error event after connection', t => {
     payload: 'hello world!',
     key: 'testKey'
   })
-  t.tearDown(() => producer.stop())
+  t.teardown(() => producer.stop())
 })

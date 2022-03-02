@@ -7,7 +7,10 @@
   "scripts": {
     "infra:start": "docker-compose up -d",
     "infra:stop": "docker-compose stop",
-    "test": "standard && tsd && tap -j=1 test/*.js"
+    "lint": "standard",
+    "lint:fix": "standard --fix",
+    "test": "npm run lint && tap \"test/*.js\" && npm run test:typescript",
+    "test:typescript": "tsd"
   },
   "repository": {
     "type": "git",
@@ -30,11 +33,13 @@
     "node-rdkafka": "^2.8.1"
   },
   "devDependencies": {
+    "@types/node": "^17.0.8",
     "abstract-logging": "2.0.1",
-    "fastify": "^3.0.0-rc.2",
-    "standard": "^16.0.1",
-    "tap": "^14.10.7",
-    "tsd": "^0.11.0"
+    "fastify": "^3.25.3",
+    "standard": "^16.0.4",
+    "tap": "^15.1.6",
+    "tsd": "^0.19.1",
+    "typescript": "^4.5.4"
   },
   "tsd": {
     "directory": "test"

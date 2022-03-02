@@ -41,7 +41,7 @@ fastify
 
 fastify.post('/data', (req, reply) => {
   fastify.kafka.push({
-    topic: 'api-data',
+    topic: 'updates',
     payload: req.body,
     key: 'dataKey'
   })
@@ -58,6 +58,8 @@ fastify.listen(3000, err => {
   console.log(`server listening on ${fastify.server.address().port}`)
 })
  ```
+ 
+For more examples on how to use this plugin you can take a look at the [examples directory](./examples).
 
 ### API
 This module exposes the following APIs:
