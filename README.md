@@ -1,7 +1,7 @@
-# fastify-kafka
+# @fastify/kafka
 
 ![CI](https://github.com/fastify/fastify-kafka/workflows/CI/badge.svg)
-[![NPM version](https://img.shields.io/npm/v/fastify-kafka.svg?style=flat)](https://www.npmjs.com/package/fastify-kafka)
+[![NPM version](https://img.shields.io/npm/v/@fastify/kafka.svg?style=flat)](https://www.npmjs.com/package/@fastify/kafka)
 [![Known Vulnerabilities](https://snyk.io/test/github/fastify/fastify-kafka/badge.svg)](https://snyk.io/test/github/fastify/fastify-kafka)
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat)](https://standardjs.com/)
 
@@ -11,7 +11,7 @@ To achieve the best performance, the plugin uses [`node-rdkafka`](https://github
 ### Install
 
 ```
-npm i fastify-kafka --save
+npm i @fastify/kafka --save
 ```
 
 ### Usage
@@ -22,7 +22,7 @@ const fastify = require('fastify')()
 const group = crypto.randomBytes(20).toString('hex')
 
 fastify
-  .register(require('fastify-kafka'), {
+  .register(require('@fastify/kafka'), {
     producer: {
       'metadata.broker.list': '127.0.0.1:9092',
       'group.id': group,
