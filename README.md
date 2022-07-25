@@ -10,7 +10,7 @@ To achieve the best performance, the plugin uses [`node-rdkafka`](https://github
 ### Install
 
 ```
-npm i @fastify/kafka --save
+npm i @fastify/kafka
 ```
 
 ### Usage
