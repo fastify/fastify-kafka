@@ -35,7 +35,7 @@
   "devDependencies": {
     "@types/node": "^18.0.0",
     "abstract-logging": "2.0.1",
-    "fastify": "^3.25.3",
+    "fastify": "^4.3.0",
     "standard": "^17.0.0",
     "tap": "^16.0.0",
     "tsd": "^0.22.0",
