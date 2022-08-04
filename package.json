@@ -3,13 +3,14 @@
   "version": "1.0.0",
   "description": "Fastify plugin to interact with Apache Kafka.",
   "main": "index.js",
-  "types": "index.d.ts",
+  "types": "types/index.d.ts",
   "scripts": {
     "infra:start": "docker-compose up -d",
     "infra:stop": "docker-compose stop",
     "lint": "standard",
     "lint:fix": "standard --fix",
-    "test": "npm run lint && tap \"test/*.js\" && npm run test:typescript",
+    "test": "npm run test:unit && npm run test:typescript",
+    "test:unit": "tap",
     "test:typescript": "tsd"
   },
   "repository": {
@@ -35,11 +36,10 @@
   "devDependencies": {
     "@types/node": "^18.0.0",
     "abstract-logging": "2.0.1",
-    "fastify": "^3.25.3",
+    "fastify": "^4.3.0",
     "standard": "^17.0.0",
     "tap": "^16.0.0",
-    "tsd": "^0.22.0",
-    "typescript": "^4.5.4"
+    "tsd": "^0.22.0"
   },
   "tsd": {
     "directory": "test"

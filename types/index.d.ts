@@ -1,4 +1,3 @@
-
 import { FastifyPluginCallback } from 'fastify';
 import { 
     ConsumerGlobalConfig, 
