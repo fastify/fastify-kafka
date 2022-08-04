@@ -43,6 +43,6 @@ function buildConsumer (fastify, opts, next) {
 }
 
 module.exports = fp(fastifyKafka, {
-  fastify: '>=4',
-  name: '@fastify/kafka'
+  fastify: '>=3',
+  name: 'fastify-kafka'
 })
