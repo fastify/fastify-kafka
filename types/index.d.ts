@@ -35,6 +35,8 @@ declare module 'fastify' {
     }
 }
 
+type FastifyKafka = FastifyPluginCallback<fastifyKafka.FastifyKafkaOptions>;
+
 declare namespace fastifyKafka {
     export interface FastifyKafkaOptions {
         producer?: ProducerGlobalConfig;
@@ -43,8 +45,10 @@ declare namespace fastifyKafka {
         consumerTopicConf?: ConsumerTopicConfig;
         metadataOptions?: MetadataOptions;
     }
+
+  export const fastifyKafka: FastifyKafka
+  export { fastifyKafka as default }
 }
 
-export const fastifyKafka: FastifyPluginCallback<fastifyKafka.FastifyKafkaOptions>;
-
-export default fastifyKafka;
+declare function fastifyKafka(...params: Parameters<FastifyKafka>): ReturnType<FastifyKafka>
+export = fastifyKafka
