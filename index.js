@@ -46,3 +46,5 @@ module.exports = fp(fastifyKafka, {
   fastify: '>=3',
   name: '@fastify/kafka'
 })
+module.exports.default = fastifyKafka
+module.exports.fastifyKafka = fastifyKafka
