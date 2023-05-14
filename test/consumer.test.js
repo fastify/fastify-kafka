@@ -1,8 +1,7 @@
 'use strict'
 
-const t = require('tap')
+const { test } = require('tap')
 const log = require('abstract-logging')
-const test = t.test
 
 const Consumer = require('../lib/consumer')
 
