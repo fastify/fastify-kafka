@@ -71,7 +71,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Start infrastructure
+      - name: Start Kafka-instance
         run: |
           docker-compose up -d
 
