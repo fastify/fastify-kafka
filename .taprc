@@ -1,4 +1,4 @@
 check-coverage: false
 
 files:
-  - test/*.js
+  - test/**/*.test.js
