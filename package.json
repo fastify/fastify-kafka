@@ -31,7 +31,7 @@
   "homepage": "https://github.com/fastify/fastify-kafka#readme",
   "dependencies": {
     "fastify-plugin": "^4.1.0",
-    "node-rdkafka": "garywilb/node-rdkafka#consume_loop_disconnect"
+    "node-rdkafka": "GaryWilber/node-rdkafka#consume_loop_disconnect"
   },
   "devDependencies": {
     "@types/node": "^20.1.4",
