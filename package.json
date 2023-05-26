@@ -31,7 +31,7 @@
   "homepage": "https://github.com/fastify/fastify-kafka#readme",
   "dependencies": {
     "fastify-plugin": "^4.1.0",
-    "node-rdkafka": "2.14.0"
+    "node-rdkafka": "2.16.1"
   },
   "devDependencies": {
     "@types/node": "^20.1.4",
