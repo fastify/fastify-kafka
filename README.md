@@ -16,7 +16,7 @@ npm i @fastify/kafka
 ### Usage
 
 ```js
-const crypto = require('crypto')
+const crypto = require('node:crypto')
 const fastify = require('fastify')()
 const group = crypto.randomBytes(20).toString('hex')
 

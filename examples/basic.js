@@ -1,6 +1,6 @@
 'use strict'
 
-const crypto = require('crypto')
+const crypto = require('node:crypto')
 const fastify = require('fastify')({
   logger: {
     level: 'debug'
