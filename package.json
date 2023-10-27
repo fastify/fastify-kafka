@@ -3,6 +3,7 @@
   "version": "2.2.1",
   "description": "Fastify plugin to interact with Apache Kafka.",
   "main": "index.js",
+  "type": "commonjs",
   "types": "types/index.d.ts",
   "scripts": {
     "infra:start": "docker-compose up -d",
