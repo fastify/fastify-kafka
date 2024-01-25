@@ -16,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/fastify/fastify-kafka"
+    "url": "git+https://github.com/fastify/fastify-kafka.git"
   },
   "keywords": [
     "fastify",
