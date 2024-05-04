@@ -20,8 +20,10 @@ test('communication', t => {
   const producerFastify = Fastify({ logger: true })
   const consumerFastify = Fastify({ logger: true })
 
-  t.teardown(() => producerFastify.close())
-  t.teardown(() => consumerFastify.close())
+  t.after(() => {
+    producerFastify.close()
+    consumerFastify.close()
+  })
 
   consumerFastify
     .register(fastifyKafka, { ...options, producer: undefined })

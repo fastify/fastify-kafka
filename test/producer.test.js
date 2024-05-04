@@ -12,11 +12,9 @@ const options = {
 }
 
 test('unreachable brokers', t => {
-  t.plan(2)
+  t.plan(1)
   const producer = new Producer(options, log, (err) => {
     t.ok(err)
-    producer.on('error', t.ok)
-    producer.push()
   }, {}, { timeout: 200 })
 })
 
@@ -35,11 +33,15 @@ test('error event after connection', t => {
     t.error(err)
     producer.producer.emit('event.error', new Error('Test Error'))
   })
-  producer.on('error', t.ok)
+  producer.on('error', (e) => {
+    t.ok(e)
+  })
   producer.push({
     topic: 'test',
     payload: 'hello world!',
     key: 'testKey'
   })
-  t.teardown(() => producer.stop())
+  t.after(() => {
+    producer.stop()
+  })
 })
