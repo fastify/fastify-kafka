@@ -1,19 +1,33 @@
-name: CI
+name: Plugin CI - Kafka
 
 on:
-  push:
-    branches:
-     - main
-     - master
-     - next
-     - 'v*'
-    paths-ignore:
-      - 'docs/**'
-      - '*.md'
   pull_request:
-    paths-ignore:
-      - 'docs/**'
-      - '*.md'
+    inputs:
+      auto-merge-exclude:
+        description: 'A semicolon seperated list of packages that you do not want to be auto-merged.'
+        required: false
+        default: 'fastify'
+        type: string
+      license-check:
+        description: 'Check licenses'
+        required: false
+        type: boolean
+        default: false
+      license-check-allowed-additional:
+        description: 'A semicolon seperated list of additional licenses to allow.'
+        required: false
+        type: string
+        default: ''
+      lint:
+        description: 'Set to true to run linting scripts.'
+        required: false
+        default: false
+        type: boolean
+      node-versions:
+        description: 'A JSON array that specifies the Node.js versions on which the job should run.'
+        required: false
+        default: '["20", "22"]'
+        type: string
 
 jobs:
   dependency-review:
@@ -31,8 +45,37 @@ jobs:
       - name: Dependency review
         uses: actions/dependency-review-action@v4
 
+  license-check:
+    if: >
+      !failure() &&
+      !cancelled() &&
+      inputs.license-check == true
+    name: Check Licenses
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Install dependencies
+        run: npm i --ignore-scripts
+
+      - name: Check Licenses
+        run: ${{ format('npx license-checker --production --summary --onlyAllow="0BSD;Apache-2.0;BlueOak-1.0.0;BSD-2-Clause;BSD-3-Clause;ISC;MIT;{0}"', inputs.license-check-allowed-additional) }}
+
   linter:
     name: Lint Code
+    if: >
+      !failure() &&
+      !cancelled() &&
+      inputs.lint == true
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -48,18 +91,38 @@ jobs:
           node-version: lts/*
 
       - name: Install dependencies
-        run: npm i --ignore-scripts
+        run: npm i
 
       - name: Lint code
         run: npm run lint
 
   test:
+    name: Node.js ${{ matrix.node-version }}
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
     strategy:
       matrix:
-        node-version: [14, 16, 18, 20]
+        node-version: [20]
+    services:
+      zookeeper:
+        image: 'confluentinc/cp-zookeeper:7.4.3'
+        env:
+          ZOOKEEPER_CLIENT_PORT: 2181
+          ZOOKEEPER_TICK_TIME: 2000
+        ports:
+          - '2181:2181'
+      kafka:
+        image: 'confluentinc/cp-kafka:7.4.3'
+        env:
+          KAFKA_BROKER_ID: 1
+          KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+          KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://localhost:9092'
+          KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+          KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+        ports:
+          - '9092:9092'
+        options: >-
+          --link zookeeper
+
     steps:
       - name: Check out repo
         uses: actions/checkout@v4
@@ -70,10 +133,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-
-      - name: Start Kafka-instance
-        run: |
-          docker-compose up -d
 
       - name: Install dependencies
         run: npm i
@@ -94,5 +153,6 @@ jobs:
     steps:
       - uses: fastify/github-action-merge-dependabot@v3
         with:
+          exclude: ${{ inputs.auto-merge-exclude }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           target: major
