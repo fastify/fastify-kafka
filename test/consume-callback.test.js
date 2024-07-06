@@ -16,8 +16,10 @@ test('consume callback', t => {
   const producerFastify = Fastify()
   const consumerFastify = Fastify()
 
-  t.teardown(() => producerFastify.close())
-  t.teardown(() => consumerFastify.close())
+  t.after(() => {
+    producerFastify.close()
+    consumerFastify.close()
+  })
 
   consumerFastify
     .register(fastifyKafka, { ...options, producer: undefined })
