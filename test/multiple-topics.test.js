@@ -17,15 +17,14 @@ test('multiple topics', t => {
   const producerFastify = Fastify()
   const consumerFastify = Fastify()
 
-  t.teardown(() => producerFastify.close())
-  t.teardown(() => consumerFastify.close())
-
   consumerFastify
     .register(fastifyKafka, { ...options, producer: undefined })
     .after(err => {
       t.error(err)
 
-      consumerFastify.kafka.consumer.on('error', t.fail)
+      consumerFastify.kafka.consumer.on('error', () => {
+        t.fail()
+      })
       consumerFastify.kafka.subscribe([topicName1, topicName2])
 
       consumerFastify.kafka.on(topicName1, (msg, commit) => {
@@ -48,7 +47,9 @@ test('multiple topics', t => {
     .after(err => {
       t.error(err)
 
-      producerFastify.kafka.producer.on('error', t.fail)
+      producerFastify.kafka.producer.on('error', () => {
+        t.fail()
+      })
       producerFastify.kafka.push({
         topic: topicName1,
         payload: 'topic1',
@@ -69,5 +70,12 @@ test('multiple topics', t => {
     consumerFastify.ready(err => {
       t.error(err)
     })
+  })
+
+  t.after(() => {
+    producerFastify.kafka.producer.stop()
+    consumerFastify.kafka.consumer.stop()
+    producerFastify.close()
+    consumerFastify.close()
   })
 })
