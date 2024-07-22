@@ -32,7 +32,7 @@
   "homepage": "https://github.com/fastify/fastify-kafka#readme",
   "dependencies": {
     "fastify-plugin": "^5.0.0-pre.fv5.1",
-    "node-rdkafka": "3.0.1"
+    "node-rdkafka": "3.1.0"
   },
   "devDependencies": {
     "@fastify/pre-commit": "^2.1.0",
