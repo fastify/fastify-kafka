@@ -43,7 +43,7 @@ function buildConsumer (fastify, opts, next) {
 }
 
 module.exports = fp(fastifyKafka, {
-  fastify: '>=3',
+  fastify: '5.x',
   name: '@fastify/kafka'
 })
 module.exports.default = fastifyKafka
