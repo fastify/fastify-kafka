@@ -24,7 +24,6 @@ fastify
   .register(require('@fastify/kafka'), {
     producer: {
       'metadata.broker.list': '127.0.0.1:9092',
-      'group.id': group,
       'fetch.wait.max.ms': 10,
       'fetch.error.backoff.ms': 50,
       'dr_cb': true
