@@ -3,7 +3,7 @@ import {
     ConsumerGlobalConfig, 
     ConsumerTopicConfig, 
     KafkaConsumer, 
-    Message, 
+    Message,
     MetadataOptions, 
     Producer, 
     ProducerGlobalConfig, 
@@ -11,7 +11,8 @@ import {
 } from 'node-rdkafka';
 
 declare module 'fastify' {
-    interface FastifyKafkaMessage extends Pick<Message, 'topic' | 'partition' | 'key'> {
+    interface FastifyKafkaMessage extends Pick<Message, 'topic' | 'key' | 'timestamp' | 'opaque' | 'headers'>{
+        partition?: number;
         payload: unknown;
     }
 
