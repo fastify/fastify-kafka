@@ -1,6 +1,6 @@
 {
   "name": "@fastify/kafka",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Fastify plugin to interact with Apache Kafka.",
   "main": "index.js",
   "type": "commonjs",
