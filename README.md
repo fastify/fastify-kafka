@@ -4,7 +4,7 @@
 [![NPM version](https://img.shields.io/npm/v/@fastify/kafka.svg?style=flat)](https://www.npmjs.com/package/@fastify/kafka)
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat)](https://standardjs.com/)
 
-Fastify plugin to interact with [Apache Kafka](http://kafka.apache.org/). Supports Kafka producer and consumer.  
+Fastify plugin to interact with [Apache Kafka](http://kafka.apache.org/). Supports Kafka producer and consumer.
 To achieve the best performance, the plugin uses [`node-rdkafka`](https://github.com/Blizzard/node-rdkafka).
 
 ### Install
@@ -56,7 +56,7 @@ fastify.listen({ port: 3000 }, err => {
   console.log(`server listening on ${fastify.server.address().port}`)
 })
  ```
- 
+
 For more examples on how to use this plugin you can take a look at the [examples directory](./examples).
 
 ### API

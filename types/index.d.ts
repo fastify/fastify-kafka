@@ -1,13 +1,13 @@
 import { FastifyPluginCallback } from 'fastify';
-import { 
-    ConsumerGlobalConfig, 
-    ConsumerTopicConfig, 
-    KafkaConsumer, 
-    Message, 
-    MetadataOptions, 
-    Producer, 
-    ProducerGlobalConfig, 
-    ProducerTopicConfig 
+import {
+    ConsumerGlobalConfig,
+    ConsumerTopicConfig,
+    KafkaConsumer,
+    Message,
+    MetadataOptions,
+    Producer,
+    ProducerGlobalConfig,
+    ProducerTopicConfig
 } from 'node-rdkafka';
 
 declare module 'fastify' {
