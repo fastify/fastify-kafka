@@ -1,6 +1,6 @@
 'use strict'
 
-const { test } = require('tap')
+const { test } = require('node:test')
 const log = require('abstract-logging')
 
 const Producer = require('../lib/producer')
@@ -13,20 +13,27 @@ const options = {
 
 test('unreachable brokers', t => {
   t.plan(1)
+  const { promise, resolve } = Promise.withResolvers()
   const producer = new Producer(options, log, (err) => {
     t.assert.ok(err)
+    resolve()
   }, {}, { timeout: 200 })
   producer.on('ready', (e) => {
     t.assert.ok(!e)
   })
+
+  return promise
 })
 
 test('error event before connection', t => {
   t.plan(1)
+  const { promise, resolve } = Promise.withResolvers()
   const producer = new Producer(options, log, (err) => {
     t.assert.ok(err)
+    resolve()
   }, {}, { timeout: 200 })
   producer.producer.emit('event.error', new Error('Test Error'))
+  return promise
 })
 
 test('error event after connection', t => {
