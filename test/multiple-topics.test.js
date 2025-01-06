@@ -20,7 +20,7 @@ test('multiple topics', t => {
   consumerFastify
     .register(fastifyKafka, { ...options, producer: undefined })
     .after(err => {
-      t.error(err)
+      t.assert.ok(!err)
 
       consumerFastify.kafka.consumer.on('error', () => {
         t.assert.fail()
@@ -45,7 +45,7 @@ test('multiple topics', t => {
   producerFastify
     .register(fastifyKafka, { ...options, consumer: undefined })
     .after(err => {
-      t.error(err)
+      t.assert.ok(!err)
 
       producerFastify.kafka.producer.on('error', () => {
         t.assert.fail()
@@ -65,10 +65,10 @@ test('multiple topics', t => {
     })
 
   producerFastify.ready(err => {
-    t.error(err)
+    t.assert.ok(!err)
 
     consumerFastify.ready(err => {
-      t.error(err)
+      t.assert.ok(!err)
     })
   })
 

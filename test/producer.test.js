@@ -17,7 +17,7 @@ test('unreachable brokers', t => {
     t.assert.ok(err)
   }, {}, { timeout: 200 })
   producer.on('ready', (e) => {
-    t.error(e)
+    t.assert.ok(!e)
   })
 })
 
@@ -33,7 +33,7 @@ test('error event after connection', t => {
   t.plan(3)
   const opts = { ...options, 'metadata.broker.list': '127.0.0.1:9092' }
   const producer = new Producer(opts, log, (err) => {
-    t.error(err)
+    t.assert.ok(!err)
     producer.producer.emit('event.error', new Error('Test Error'))
   })
   producer.on('error', (e) => {
