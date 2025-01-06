@@ -15,7 +15,7 @@ const options = {
 test('unreachable brokers', t => {
   t.plan(1)
   const consumer = new Consumer(options, log, (err) => {
-    t.ok(err)
+    t.assert.ok(err)
   }, {}, { timeout: 200 })
   consumer.on('ready', (e) => {
     t.error(e)
@@ -25,7 +25,7 @@ test('unreachable brokers', t => {
 test('error event before connection', t => {
   t.plan(1)
   const consumer = new Consumer(options, log, (err) => {
-    t.ok(err)
+    t.assert.ok(err)
   }, {}, { timeout: 200 })
   consumer.consumer.emit('event.error', new Error('Test Error'))
 })
@@ -38,7 +38,7 @@ test('error event after connection', t => {
     consumer.consumer.emit('event.error', new Error('Test Error'))
   })
   consumer.on('error', (s) => {
-    t.ok(s)
+    t.assert.ok(s)
   })
   t.after(() => {
     consumer.stop()
@@ -53,7 +53,7 @@ test('empty message with data event', t => {
     t.throws(() => consumer.consumer.emit('data'))
   })
   consumer.on('error', (s) => {
-    t.ok(s)
+    t.assert.ok(s)
   })
   t.after(() => {
     consumer.stop()

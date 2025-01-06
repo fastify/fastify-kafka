@@ -32,7 +32,7 @@ test('communication', async t => {
     .after(err => {
       t.assert.ok(!err)
 
-      consumerFastify.kafka.consumer.on('error', t.assert.fail)
+      consumerFastify.kafka.consumer.on('error', t.assert.assert.fail)
       consumerFastify.kafka.subscribe(topicName)
 
       consumerFastify.kafka.on(topicName, (msg, commit) => {
@@ -51,7 +51,7 @@ test('communication', async t => {
     .after(err => {
       t.assert.ok(!err)
 
-      producerFastify.kafka.producer.on('error', t.assert.fail)
+      producerFastify.kafka.producer.on('error', t.assert.assert.fail)
       producerFastify.kafka.push({
         topic: topicName,
         payload: 'hello world!',

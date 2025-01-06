@@ -23,20 +23,20 @@ test('multiple topics', t => {
       t.error(err)
 
       consumerFastify.kafka.consumer.on('error', () => {
-        t.fail()
+        t.assert.fail()
       })
       consumerFastify.kafka.subscribe([topicName1, topicName2])
 
       consumerFastify.kafka.on(topicName1, (msg, commit) => {
         t.equal(msg.value.toString(), 'topic1')
         commit()
-        t.ok(true)
+        t.assert.ok(true)
       })
 
       consumerFastify.kafka.on(topicName2, (msg, commit) => {
         t.equal(msg.value.toString(), 'topic2')
         commit()
-        t.ok(true)
+        t.assert.ok(true)
       })
 
       consumerFastify.kafka.consume()
@@ -48,7 +48,7 @@ test('multiple topics', t => {
       t.error(err)
 
       producerFastify.kafka.producer.on('error', () => {
-        t.fail()
+        t.assert.fail()
       })
       producerFastify.kafka.push({
         topic: topicName1,
@@ -61,7 +61,7 @@ test('multiple topics', t => {
         key: 'kafkaKey'
       })
 
-      t.ok(true)
+      t.assert.ok(true)
     })
 
   producerFastify.ready(err => {

@@ -14,7 +14,7 @@ const options = {
 test('unreachable brokers', t => {
   t.plan(1)
   const producer = new Producer(options, log, (err) => {
-    t.ok(err)
+    t.assert.ok(err)
   }, {}, { timeout: 200 })
   producer.on('ready', (e) => {
     t.error(e)
@@ -24,7 +24,7 @@ test('unreachable brokers', t => {
 test('error event before connection', t => {
   t.plan(1)
   const producer = new Producer(options, log, (err) => {
-    t.ok(err)
+    t.assert.ok(err)
   }, {}, { timeout: 200 })
   producer.producer.emit('event.error', new Error('Test Error'))
 })
@@ -37,7 +37,7 @@ test('error event after connection', t => {
     producer.producer.emit('event.error', new Error('Test Error'))
   })
   producer.on('error', (e) => {
-    t.ok(e)
+    t.assert.ok(e)
   })
   producer.push({
     topic: 'test',
