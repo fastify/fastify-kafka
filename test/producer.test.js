@@ -39,12 +39,16 @@ test('error event before connection', t => {
 test('error event after connection', t => {
   t.plan(3)
   const opts = { ...options, 'metadata.broker.list': '127.0.0.1:9092' }
+  const { promise, resolve } = Promise.withResolvers()
   const producer = new Producer(opts, log, (err) => {
     t.assert.ok(!err)
     producer.producer.emit('event.error', new Error('Test Error'))
   })
   producer.on('error', (e) => {
     t.assert.ok(e)
+    if (e.message === 'Test Error') {
+      resolve()
+    }
   })
   producer.push({
     topic: 'test',
@@ -54,4 +58,5 @@ test('error event after connection', t => {
   t.after(() => {
     producer.stop()
   })
+  return promise
 })
