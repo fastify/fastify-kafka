@@ -28,13 +28,13 @@ test('multiple topics', t => {
       consumerFastify.kafka.subscribe([topicName1, topicName2])
 
       consumerFastify.kafka.on(topicName1, (msg, commit) => {
-        t.equal(msg.value.toString(), 'topic1')
+        t.assert.deepStrictEqual(msg.value.toString(), 'topic1')
         commit()
         t.assert.ok(true)
       })
 
       consumerFastify.kafka.on(topicName2, (msg, commit) => {
-        t.equal(msg.value.toString(), 'topic2')
+        t.assert.deepStrictEqual(msg.value.toString(), 'topic2')
         commit()
         t.assert.ok(true)
       })
