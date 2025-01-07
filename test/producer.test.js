@@ -5,6 +5,8 @@ const log = require('abstract-logging')
 
 const Producer = require('../lib/producer')
 
+require('./utils')
+
 const options = {
   'metadata.broker.list': '192.0.2.1:9092',
   'socket.timeout.ms': 10,

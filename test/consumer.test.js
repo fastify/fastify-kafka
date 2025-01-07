@@ -5,6 +5,8 @@ const log = require('abstract-logging')
 
 const Consumer = require('../lib/consumer')
 
+require('./utils')
+
 const options = {
   'metadata.broker.list': '192.0.2.1:9092',
   'fetch.wait.max.ms': 10,
