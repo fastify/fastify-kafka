@@ -1,9 +1,11 @@
 'use strict'
 
-const { test } = require('tap')
+const { test } = require('node:test')
 const log = require('abstract-logging')
 
 const Consumer = require('../lib/consumer')
+
+const { withResolvers } = require('./utils')
 
 const options = {
   'metadata.broker.list': '192.0.2.1:9092',
@@ -12,50 +14,63 @@ const options = {
   'group.id': 'new-group-id'
 }
 
-test('unreachable brokers', t => {
+test('unreachable brokers', async t => {
   t.plan(1)
+  const { promise, resolve } = withResolvers()
   const consumer = new Consumer(options, log, (err) => {
-    t.ok(err)
+    t.assert.ok(err)
+    resolve()
   }, {}, { timeout: 200 })
   consumer.on('ready', (e) => {
-    t.error(e)
+    t.assert.ok(!e)
   })
+
+  return promise
 })
 
 test('error event before connection', t => {
   t.plan(1)
+  const { promise, resolve } = withResolvers()
   const consumer = new Consumer(options, log, (err) => {
-    t.ok(err)
+    t.assert.ok(err)
+    resolve()
   }, {}, { timeout: 200 })
   consumer.consumer.emit('event.error', new Error('Test Error'))
+  return promise
 })
 
 test('error event after connection', t => {
   t.plan(2)
   const opts = { ...options, 'metadata.broker.list': '127.0.0.1:9092' }
+  const { promise, resolve } = withResolvers()
   const consumer = new Consumer(opts, log, (err) => {
-    t.error(err)
+    t.assert.ok(!err)
     consumer.consumer.emit('event.error', new Error('Test Error'))
   })
   consumer.on('error', (s) => {
-    t.ok(s)
+    t.assert.ok(s)
+    resolve()
   })
   t.after(() => {
     consumer.stop()
   })
+  return promise
 })
 
 test('empty message with data event', t => {
   t.plan(3)
   const opts = { ...options, 'metadata.broker.list': '127.0.0.1:9092' }
+  const { promise, resolve } = withResolvers()
   const consumer = new Consumer(opts, log, (err) => {
-    t.error(err)
-    t.throws(() => consumer.consumer.emit('data'))
+    t.assert.ok(!err)
+    t.assert.throws(() => consumer.consumer.emit('data'))
   })
   consumer.on('error', (s) => {
-    t.ok(s)
+    t.assert.ok(s)
+    resolve()
   })
   t.after(() => {
     consumer.stop()
   })
+  return promise
 })

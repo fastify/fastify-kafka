@@ -1,12 +1,12 @@
 'use strict'
 
-const { test } = require('tap')
+const { test } = require('node:test')
 const Fastify = require('fastify')
 const fastifyKafka = require('..')
-const { getDefaultOptions, generateGroupId, generateTopicName } = require('./utils')
+const { getDefaultOptions, generateGroupId, generateTopicName, withResolvers } = require('./utils')
 
-test('multiple topics', t => {
-  t.plan(9)
+test('multiple topics', async t => {
+  t.plan(7)
   const options = getDefaultOptions()
   const group = generateGroupId()
   options.consumer['group.id'] = group
@@ -19,36 +19,43 @@ test('multiple topics', t => {
 
   consumerFastify
     .register(fastifyKafka, { ...options, producer: undefined })
-    .after(err => {
-      t.error(err)
+    .after(async err => {
+      t.assert.ok(!err)
 
       consumerFastify.kafka.consumer.on('error', () => {
-        t.fail()
+        t.assert.fail()
       })
       consumerFastify.kafka.subscribe([topicName1, topicName2])
 
+      const { promise: promiseTopic1, resolve: resolveTopic1 } = withResolvers()
+      const { promise: promiseTopic2, resolve: resolveTopic2 } = withResolvers()
+
       consumerFastify.kafka.on(topicName1, (msg, commit) => {
-        t.equal(msg.value.toString(), 'topic1')
+        t.assert.deepStrictEqual(msg.value.toString(), 'topic1')
         commit()
-        t.ok(true)
+        t.assert.ok(true)
+        resolveTopic1()
       })
 
       consumerFastify.kafka.on(topicName2, (msg, commit) => {
-        t.equal(msg.value.toString(), 'topic2')
+        t.assert.deepStrictEqual(msg.value.toString(), 'topic2')
         commit()
-        t.ok(true)
+        t.assert.ok(true)
+        resolveTopic2()
       })
 
       consumerFastify.kafka.consume()
+
+      await Promise.all([promiseTopic1, promiseTopic2])
     })
 
   producerFastify
     .register(fastifyKafka, { ...options, consumer: undefined })
     .after(err => {
-      t.error(err)
+      t.assert.ok(!err)
 
       producerFastify.kafka.producer.on('error', () => {
-        t.fail()
+        t.assert.fail()
       })
       producerFastify.kafka.push({
         topic: topicName1,
@@ -61,16 +68,11 @@ test('multiple topics', t => {
         key: 'kafkaKey'
       })
 
-      t.ok(true)
+      t.assert.ok(true)
     })
 
-  producerFastify.ready(err => {
-    t.error(err)
-
-    consumerFastify.ready(err => {
-      t.error(err)
-    })
-  })
+  await producerFastify.ready()
+  await consumerFastify.ready()
 
   t.after(() => {
     producerFastify.kafka.producer.stop()

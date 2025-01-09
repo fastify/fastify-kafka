@@ -1,11 +1,11 @@
 'use strict'
 
-const { test } = require('tap')
+const { test } = require('node:test')
 const Fastify = require('fastify')
 const fastifyKafka = require('..')
-const { getDefaultOptions, generateGroupId, generateTopicName } = require('./utils')
+const { getDefaultOptions, generateGroupId, generateTopicName, withResolvers } = require('./utils')
 
-test('consume callback', t => {
+test('consume callback', async t => {
   const options = getDefaultOptions()
   const group = generateGroupId()
   options.consumer['group.id'] = group
@@ -21,25 +21,25 @@ test('consume callback', t => {
     consumerFastify.close()
   })
 
+  const { promise, resolve } = withResolvers()
+
   consumerFastify
     .register(fastifyKafka, { ...options, producer: undefined })
     .after(err => {
-      t.error(err)
+      t.assert.ok(!err)
 
-      consumerFastify.kafka.consumer.on('error', t.fail)
+      consumerFastify.kafka.consumer.on('error', t.assert.fail)
       consumerFastify.kafka.subscribe(topicName)
 
-      consumerFastify.kafka.on(topicName, t.fail)
+      consumerFastify.kafka.on(topicName, t.assert.fail)
 
       function onConsume (err, message) {
-        t.error(err)
-        t.match(message, {
-          topic: topicName,
-          value: Buffer.from('hello world!'),
-          key: Buffer.from('testKey')
-        })
+        t.assert.ok(!err)
+        t.assert.deepStrictEqual(message.topic, topicName)
+        t.assert.deepStrictEqual(message.value.toString(), 'hello world!')
+        t.assert.deepStrictEqual(message.key.toString(), 'testKey')
 
-        t.end()
+        resolve()
       }
 
       consumerFastify.kafka.consume(onConsume)
@@ -48,23 +48,20 @@ test('consume callback', t => {
   producerFastify
     .register(fastifyKafka, { ...options, consumer: undefined })
     .after(err => {
-      t.error(err)
+      t.assert.ok(!err)
 
-      producerFastify.kafka.producer.on('error', t.fail)
+      producerFastify.kafka.producer.on('error', t.assert.fail)
       producerFastify.kafka.push({
         topic: topicName,
         payload: 'hello world!',
         key: 'testKey'
       })
 
-      t.ok(true)
+      t.assert.ok(true)
     })
 
-  producerFastify.ready(err => {
-    t.error(err)
+  await producerFastify.ready()
+  await consumerFastify.ready()
 
-    consumerFastify.ready(err => {
-      t.error(err)
-    })
-  })
+  return promise
 })
