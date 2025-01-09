@@ -5,7 +5,7 @@ const log = require('abstract-logging')
 
 const Consumer = require('../lib/consumer')
 
-require('./utils')
+const { withResolvers } = require('./utils')
 
 const options = {
   'metadata.broker.list': '192.0.2.1:9092',
@@ -16,7 +16,7 @@ const options = {
 
 test('unreachable brokers', async t => {
   t.plan(1)
-  const { promise, resolve } = Promise.withResolvers()
+  const { promise, resolve } = withResolvers()
   const consumer = new Consumer(options, log, (err) => {
     t.assert.ok(err)
     resolve()
@@ -30,7 +30,7 @@ test('unreachable brokers', async t => {
 
 test('error event before connection', t => {
   t.plan(1)
-  const { promise, resolve } = Promise.withResolvers()
+  const { promise, resolve } = withResolvers()
   const consumer = new Consumer(options, log, (err) => {
     t.assert.ok(err)
     resolve()
@@ -42,7 +42,7 @@ test('error event before connection', t => {
 test('error event after connection', t => {
   t.plan(2)
   const opts = { ...options, 'metadata.broker.list': '127.0.0.1:9092' }
-  const { promise, resolve } = Promise.withResolvers()
+  const { promise, resolve } = withResolvers()
   const consumer = new Consumer(opts, log, (err) => {
     t.assert.ok(!err)
     consumer.consumer.emit('event.error', new Error('Test Error'))
@@ -60,7 +60,7 @@ test('error event after connection', t => {
 test('empty message with data event', t => {
   t.plan(3)
   const opts = { ...options, 'metadata.broker.list': '127.0.0.1:9092' }
-  const { promise, resolve } = Promise.withResolvers()
+  const { promise, resolve } = withResolvers()
   const consumer = new Consumer(opts, log, (err) => {
     t.assert.ok(!err)
     t.assert.throws(() => consumer.consumer.emit('data'))

@@ -3,7 +3,7 @@
 const { test } = require('node:test')
 const Fastify = require('fastify')
 const fastifyKafka = require('..')
-const { getDefaultOptions, generateGroupId, generateTopicName } = require('./utils')
+const { getDefaultOptions, generateGroupId, generateTopicName, withResolvers } = require('./utils')
 
 test('multiple topics', async t => {
   t.plan(7)
@@ -27,8 +27,8 @@ test('multiple topics', async t => {
       })
       consumerFastify.kafka.subscribe([topicName1, topicName2])
 
-      const { promise: promiseTopic1, resolve: resolveTopic1 } = Promise.withResolvers()
-      const { promise: promiseTopic2, resolve: resolveTopic2 } = Promise.withResolvers()
+      const { promise: promiseTopic1, resolve: resolveTopic1 } = withResolvers()
+      const { promise: promiseTopic2, resolve: resolveTopic2 } = withResolvers()
 
       consumerFastify.kafka.on(topicName1, (msg, commit) => {
         t.assert.deepStrictEqual(msg.value.toString(), 'topic1')

@@ -3,7 +3,7 @@
 const { test } = require('node:test')
 const Fastify = require('fastify')
 const fastifyKafka = require('..')
-const { getDefaultOptions, generateGroupId, generateTopicName } = require('./utils')
+const { getDefaultOptions, generateGroupId, generateTopicName, withResolvers } = require('./utils')
 
 test('consume callback', async t => {
   const options = getDefaultOptions()
@@ -21,7 +21,7 @@ test('consume callback', async t => {
     consumerFastify.close()
   })
 
-  const { promise, resolve } = Promise.withResolvers()
+  const { promise, resolve } = withResolvers()
 
   consumerFastify
     .register(fastifyKafka, { ...options, producer: undefined })

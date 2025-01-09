@@ -38,13 +38,11 @@ module.exports.generateTopicName = function generateTopicName () {
   return crypto.randomBytes(5).toString('hex')
 }
 
-if (typeof Promise.withResolvers === 'undefined') {
-  Promise.withResolvers = function () {
-    let promiseResolve, promiseReject
-    const promise = new Promise((resolve, reject) => {
-      promiseResolve = resolve
-      promiseReject = reject
-    })
-    return { promise, resolve: promiseResolve, reject: promiseReject }
-  }
+module.exports.withResolvers = Promise.withResolvers?.bind(Promise) || function () {
+  let promiseResolve, promiseReject
+  const promise = new Promise((resolve, reject) => {
+    promiseResolve = resolve
+    promiseReject = reject
+  })
+  return { promise, resolve: promiseResolve, reject: promiseReject }
 }

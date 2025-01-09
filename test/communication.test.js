@@ -6,7 +6,8 @@ const fastifyKafka = require('..')
 const {
   generateTopicName,
   generateGroupId,
-  getDefaultOptions
+  getDefaultOptions,
+  withResolvers
 } = require('./utils')
 
 test('communication', async t => {
@@ -25,7 +26,7 @@ test('communication', async t => {
     consumerFastify.close()
   })
 
-  const { promise, resolve } = Promise.withResolvers()
+  const { promise, resolve } = withResolvers()
 
   consumerFastify
     .register(fastifyKafka, { ...options, producer: undefined })
