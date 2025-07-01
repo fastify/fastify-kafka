@@ -61,7 +61,7 @@
   ],
   "dependencies": {
     "fastify-plugin": "^5.0.0",
-    "node-rdkafka": "3.4.0"
+    "node-rdkafka": "3.4.1"
   },
   "devDependencies": {
     "@fastify/pre-commit": "^2.1.0",
