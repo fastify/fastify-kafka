@@ -1,35 +1,39 @@
 import { FastifyPluginCallback } from 'fastify'
 import {
-  ConsumerGlobalConfig,
-  ConsumerTopicConfig,
-  KafkaConsumer,
-  Message,
-  MetadataOptions,
+  Consumer,
   Producer,
-  ProducerGlobalConfig,
-  ProducerTopicConfig
-} from 'node-rdkafka'
+} from '@platformatic/kafka'
 
 declare module 'fastify' {
-  interface FastifyKafkaMessage extends Pick<Message, 'topic' | 'partition' | 'key'> {
+  interface FastifyKafkaMessage {
+    topic: string;
+    partition?: number;
+    key?: string | null;
     payload: unknown;
   }
 
   interface FastifyKafkaProducer {
     producer: Producer;
-    push(message: FastifyKafkaMessage): void;
-    stop(done: () => void): void;
+    push(message: FastifyKafkaMessage): Promise<FastifyKafkaProducer>;
+    stop(done: (err?: Error) => void): void;
   }
 
-  interface FastifyKafkaConsumer extends Pick<KafkaConsumer, 'consume' | 'subscribe'> {
-    consumer: KafkaConsumer;
-    stop(done: () => void): void;
+  interface FastifyKafkaConsumer {
+    consumer: Consumer;
+    consume(value?: number, cbk?: (err: Error | null, messages: unknown[]) => void): void;
+    subscribe(topic: string | string[]): FastifyKafkaConsumer;
+    stop(done: (err?: Error) => void): void;
   }
 
-  interface Kafka extends Pick<FastifyKafkaProducer, 'push'>, Pick<FastifyKafkaConsumer, 'consume' | 'subscribe'> {
+  interface Kafka {
     producer?: FastifyKafkaProducer;
     consumer?: FastifyKafkaConsumer;
+    push(message: FastifyKafkaMessage): void;
+    consume(value?: number, cbk?: (err: Error | null, messages: unknown[]) => void): void;
+    subscribe(topic: string | string[]): FastifyKafkaConsumer;
+    on(event: string, listener: (...args: unknown[]) => void): FastifyKafkaConsumer;
   }
+
   interface FastifyInstance {
     kafka: Kafka;
   }
@@ -39,11 +43,11 @@ type FastifyKafka = FastifyPluginCallback<fastifyKafka.FastifyKafkaOptions>
 
 declare namespace fastifyKafka {
   export interface FastifyKafkaOptions {
-    producer?: ProducerGlobalConfig;
-    consumer?: ConsumerGlobalConfig;
-    producerTopicConf?: ProducerTopicConfig;
-    consumerTopicConf?: ConsumerTopicConfig;
-    metadataOptions?: MetadataOptions;
+    producer?: Record<string, unknown>;
+    consumer?: Record<string, unknown>;
+    producerTopicConf?: Record<string, unknown>;
+    consumerTopicConf?: Record<string, unknown>;
+    metadataOptions?: Record<string, unknown>;
   }
 
   export const fastifyKafka: FastifyKafka

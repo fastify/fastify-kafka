@@ -1,64 +1,95 @@
 'use strict'
 
-const { test } = require('node:test')
-const log = require('abstract-logging')
-
+const { test, describe, before, after } = require('node:test')
+const assert = require('node:assert')
+const pino = require('pino')
 const Producer = require('../lib/producer')
+const { createTopics, getDefaultOptions, generateTopicName } = require('./utils')
 
-const { withResolvers } = require('./utils')
+const log = pino({ level: 'silent' })
 
-const options = {
-  'metadata.broker.list': '192.0.2.1:9092',
-  'socket.timeout.ms': 10,
-  dr_cb: true
-}
+describe('Kafka Producer', () => {
+  let deleteTopics
+  const topic = generateTopicName()
+  const opts = getDefaultOptions()
 
-test('unreachable brokers', t => {
-  t.plan(1)
-  const { promise, resolve } = withResolvers()
-  const producer = new Producer(options, log, (err) => {
-    t.assert.ok(err)
-    resolve()
-  }, {}, { timeout: 200 })
-  producer.on('ready', (e) => {
-    t.assert.ok(!e)
+  before(async () => {
+    deleteTopics = await createTopics(topic)
   })
 
-  return promise
-})
+  after(async () => {
+    if (deleteTopics) await deleteTopics()
+  })
 
-test('error event before connection', t => {
-  t.plan(1)
-  const { promise, resolve } = withResolvers()
-  const producer = new Producer(options, log, (err) => {
-    t.assert.ok(err)
-    resolve()
-  }, {}, { timeout: 200 })
-  producer.producer.emit('event.error', new Error('Test Error'))
-  return promise
-})
+  test('should initialize and send a message correctly', async () => {
+    const producer = new Producer(opts.producer, log, () => {})
 
-test('error event after connection', t => {
-  t.plan(3)
-  const opts = { ...options, 'metadata.broker.list': '127.0.0.1:9092' }
-  const { promise, resolve } = withResolvers()
-  const producer = new Producer(opts, log, (err) => {
-    t.assert.ok(!err)
-    producer.producer.emit('event.error', new Error('Test Error'))
+    const instance = await producer.push({
+      topic,
+      payload: 'hello world',
+      key: 'test-key'
+    })
+
+    assert.strictEqual(instance, producer, 'push() should return this for chaining')
+    await new Promise(resolve => producer.stop(resolve))
   })
-  producer.on('error', (e) => {
-    t.assert.ok(e)
-    if (e.message === 'Test Error') {
-      resolve()
-    }
+
+  test('should handle send errors when broker is invalid', async () => {
+    const invalidOpts = { bootstrapBrokers: ['127.0.0.1:9001'] }
+    const producer = new Producer(invalidOpts, log, () => {})
+
+    await assert.rejects(
+      producer.push({ topic: 'test', payload: 'data' }),
+      { code: 'PLT_KFK_MULTIPLE' }
+    )
+    await new Promise(resolve => producer.stop(resolve))
   })
-  producer.push({
-    topic: 'test',
-    payload: 'hello world!',
-    key: 'testKey'
+
+  test('should handle constructor errors', (t, done) => {
+    // eslint-disable-next-line no-new
+    new Producer(null, log, (err) => {
+      assert.ok(err, 'Should return an error when opts are null')
+      done()
+    })
   })
-  t.after(() => {
+
+  test('should handle stop without a callback', () => {
+    const producer = new Producer(opts.producer, log, () => {})
     producer.stop()
+    assert.ok(true)
   })
-  return promise
+
+  test('should handle errors when stopping the producer', (t, done) => {
+    const producer = new Producer(opts.producer, log, () => {})
+    producer._producer.close = async () => {
+      throw new Error('Forced Shutdown Error')
+    }
+
+    producer.stop((err) => {
+      assert.strictEqual(err.message, 'Forced Shutdown Error')
+      done()
+    })
+  })
+
+  test('should handle stop when producer is not initialized', (t, done) => {
+    // Mocking an uninitialized producer
+    const producer = new Producer({}, log, () => {}, {})
+    producer._producer = null
+
+    producer.stop(() => {
+      done()
+    })
+  })
+
+  test('should handle null partition', async () => {
+    const producer = new Producer(opts.producer, log, () => {})
+
+    await producer.push({
+      topic,
+      payload: 'no-partition',
+      partition: null
+    })
+
+    await new Promise(resolve => producer.stop(resolve))
+  })
 })

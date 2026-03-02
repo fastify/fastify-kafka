@@ -1,27 +1,61 @@
 'use strict'
 
 const crypto = require('node:crypto')
+const { Admin } = require('@platformatic/kafka')
+
+const BOOTSTRAP_BROKERS = ['127.0.0.1:9092']
+
+module.exports.BOOTSTRAP_BROKERS = BOOTSTRAP_BROKERS
 
 module.exports.getDefaultOptions = function getDefaultOptions () {
   return {
     producer: {
-      'metadata.broker.list': '127.0.0.1:9092',
-      'allow.auto.create.topics': true,
-      dr_cb: true
+      bootstrapBrokers: BOOTSTRAP_BROKERS,
+      clientId: 'fastify-kafka-test-producer',
+      allowAutoTopicCreation: true
     },
     consumer: {
-      'metadata.broker.list': '127.0.0.1:9092',
-      'fetch.wait.max.ms': 10,
-      'fetch.error.backoff.ms': 50,
-      'topic.metadata.refresh.interval.ms': 100,
-      'allow.auto.create.topics': true
+      bootstrapBrokers: BOOTSTRAP_BROKERS,
+      clientId: 'fastify-kafka-test-consumer',
+      maxWaitTime: 100,
+      autocommit: false,
+      allowAutoTopicCreation: true
     },
-    consumerTopicConf: {
-      'auto.offset.reset': 'beginning'
-    },
-    metadataOptions: {
-      timeout: 2000
-    }
+    consumerTopicConf: {}
+  }
+}
+
+/**
+ * Create topics via the Admin API.
+ * Returns a function to delete them at the end of the test.
+ */
+module.exports.createTopics = async function createTopics (topics) {
+  const admin = new Admin({
+    bootstrapBrokers: BOOTSTRAP_BROKERS,
+    clientId: 'fastify-kafka-test-admin'
+  })
+
+  try {
+    await admin.createTopics({
+      topics: Array.isArray(topics) ? topics : [topics],
+      partitions: 1,
+      replicas: 1
+    })
+    // Small delay to give Kafka time to propagate metadata
+    await new Promise(resolve => setTimeout(resolve, 500))
+  } catch (err) {
+    if (!err.message || !err.message.includes('already exists')) throw err
+  } finally {
+    await admin.close()
+  }
+
+  return async function deleteTopics () {
+    const a = new Admin({ bootstrapBrokers: BOOTSTRAP_BROKERS, clientId: 'fastify-kafka-test-admin-cleanup' })
+    try {
+      const toDelete = Array.isArray(topics) ? topics : [topics]
+      await a.deleteTopics({ topics: toDelete })
+    } catch (_) {}
+    await a.close()
   }
 }
 

@@ -6,20 +6,22 @@ const app = Fastify()
 
 app.register(fastifyKafka, {
   producer: {
-    'metadata.broker.list': '127.0.0.1:9092',
-    dr_cb: true
+    bootstrapBrokers: ['127.0.0.1:9092'],
+    drCb: true,
+    queueBufferingMaxMessages: 100000
   },
   consumer: {
-    'metadata.broker.list': '127.0.0.1:9092',
-    'group.id': 'new-group-1',
-    'fetch.wait.max.ms': 10,
-    'fetch.error.backoff.ms': 50,
+    bootstrapBrokers: ['127.0.0.1:9092'],
+    groupId: 'new-group-1',
+    fetchWaitMaxMs: 10,
+    fetchErrorBackoffMs: 50,
+    enableAutoCommit: true
   },
   consumerTopicConf: {
-    'auto.offset.reset': 'earliest'
+    autoOffsetReset: 'earliest'
   },
   producerTopicConf: {
-    'request.timeout.ms': 10
+    requestTimeoutMs: 10
   },
   metadataOptions: {
     timeout: 1000
