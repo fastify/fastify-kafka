@@ -12,14 +12,14 @@ fastify
     producer: {
       bootstrapBrokers: ['127.0.0.1:9092'],
       clientId: 'fastify-kafka-test-producer',
-      allowAutoTopicCreation: true
+      autocreateTopics: true
     },
     consumer: {
       bootstrapBrokers: ['127.0.0.1:9092'],
       // eslint-disable-next-line object-shorthand
       groupId: groupId,
       clientId: 'fastify-kafka-test-consumer',
-      allowAutoTopicCreation: true
+      autocreateTopics: true
     },
   })
   .after(err => {
