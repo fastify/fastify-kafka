@@ -66,7 +66,7 @@ fastify.kafka.on('updates', (msg, commit) => {
 
 fastify.listen({ port: 3000 }, err => {
   if (err) throw err
-  console.log(`server listening on ${fastify.server.address().port}`)
+  console.log(`Server listening on ${fastify.server.address().port}`)
   fastify.kafka.consume()
 })
 ```
