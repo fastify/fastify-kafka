@@ -1,5 +1,5 @@
 import Fastify, { FastifyKafkaConsumer, FastifyKafkaProducer, Kafka } from 'fastify'
-import { expectAssignable } from 'tsd'
+import { expect } from 'tstyche'
 import fastifyKafka from '..'
 
 const app = Fastify()
@@ -29,9 +29,9 @@ app.register(fastifyKafka, {
 })
 
 // Check whether all properties are merged successfully or not
-expectAssignable<Kafka>(app.kafka)
-expectAssignable<FastifyKafkaProducer | undefined>(app.kafka.producer)
-expectAssignable<FastifyKafkaConsumer | undefined>(app.kafka.consumer)
-expectAssignable<Function>(app.kafka.push)
-expectAssignable<Function>(app.kafka.consume)
-expectAssignable<Function>(app.kafka.subscribe)
+expect(app.kafka).type.toBeAssignableTo<Kafka>()
+expect(app.kafka.producer).type.toBeAssignableTo<FastifyKafkaProducer | undefined>()
+expect(app.kafka.consumer).type.toBeAssignableTo<FastifyKafkaConsumer | undefined>()
+expect(app.kafka.push).type.toBeAssignableTo<Function>()
+expect(app.kafka.consume).type.toBeAssignableTo<Function>()
+expect(app.kafka.subscribe).type.toBeAssignableTo<Function>()
