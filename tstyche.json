@@ -1,4 +1,0 @@
-{
-  "$schema": "https://tstyche.org/schema.json",
-  "testFileMatch": ["types/*.test-d.ts"]
-}
