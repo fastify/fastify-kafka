@@ -26,9 +26,9 @@ app.register(fastifyKafka, {
 })
 
 // Check whether all properties are merged successfully or not
-expect(app.kafka).type.toBeAssignableTo<Kafka>()
-expect(app.kafka.producer).type.toBeAssignableTo<FastifyKafkaProducer | undefined>()
-expect(app.kafka.consumer).type.toBeAssignableTo<FastifyKafkaConsumer | undefined>()
+expect(app.kafka).type.toBe<Kafka>()
+expect(app.kafka.producer).type.toBe<FastifyKafkaProducer | undefined>()
+expect(app.kafka.consumer).type.toBe<FastifyKafkaConsumer | undefined>()
 expect(app.kafka.push).type.toBeAssignableTo<Function>()
 expect(app.kafka.consume).type.toBeAssignableTo<Function>()
 expect(app.kafka.subscribe).type.toBeAssignableTo<Function>()
