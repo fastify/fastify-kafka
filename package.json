@@ -60,7 +60,7 @@
     }
   ],
   "dependencies": {
-    "fastify-plugin": "^5.0.0",
+    "fastify-plugin": "^6.0.0",
     "node-rdkafka": "3.6.1"
   },
   "devDependencies": {
