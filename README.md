@@ -4,7 +4,7 @@
 [![NPM version](https://img.shields.io/npm/v/@fastify/kafka.svg?style=flat)](https://www.npmjs.com/package/@fastify/kafka)
 [![neostandard javascript style](https://img.shields.io/badge/code_style-neostandard-brightgreen?style=flat)](https://github.com/neostandard/neostandard)
 
-Fastify plugin to interact with [Apache Kafka](http://kafka.apache.org/), supporting Kafka producers and consumers.
+Fastify plugin to interact with [Apache Kafka](https://kafka.apache.org/), supporting Kafka producers and consumers.
 To achieve the best performance, the plugin uses [`node-rdkafka`](https://github.com/Blizzard/node-rdkafka).
 
 ### Install
