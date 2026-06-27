@@ -97,8 +97,8 @@ This module exposes the following APIs:
 
 ```ts
 {
-  producer?: Record<string, unknown>       // @platformatic/kafka Producer options
-  consumer?: Record<string, unknown>       // @platformatic/kafka Consumer options
+  producer?: Record<string, unknown>   // @platformatic/kafka Producer options
+  consumer?: Record<string, unknown>   // @platformatic/kafka Consumer options
   producerTopicConf?: Record<string, unknown>
   consumerTopicConf?: Record<string, unknown>
   metadataOptions?: Record<string, unknown>
@@ -148,7 +148,6 @@ fastify.kafka.consume(10, (err, messages) => {
 
 This project is kindly sponsored by:
 
-- [LetzDoIt](https://www.letzdoitapp.com/)
 - [Platformatic](https://platformatic.dev/)
 
 ## License
