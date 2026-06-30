@@ -86,8 +86,8 @@ This module exposes the following APIs:
 
 ## Acknowledgments
 
-This project is kindly sponsored by:
-- [LetzDoIt](https://www.letzdoitapp.com/)
+Past sponsors:
+- LetzDoIt
 
 ## License
 
