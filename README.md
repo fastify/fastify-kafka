@@ -150,6 +150,9 @@ This project is kindly sponsored by:
 
 - [Platformatic](https://platformatic.dev/)
 
+Past sponsors:
+- LetzDoIt
+
 ## License
 
 Licensed under [MIT](./LICENSE).
