@@ -64,7 +64,7 @@
     "fastify-plugin": "^6.0.0"
   },
   "devDependencies": {
-    "@types/node": "^25.0.3",
+    "@types/node": "^26.0.0",
     "abstract-logging": "2.0.1",
     "avsc": "^5.7.9",
     "c8": "^11.0.0",
