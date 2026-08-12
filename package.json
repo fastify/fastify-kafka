@@ -60,7 +60,7 @@
     }
   ],
   "dependencies": {
-    "@platformatic/kafka": "^1.34.0",
+    "@platformatic/kafka": "^2.8.0",
     "fastify-plugin": "^6.0.0"
   },
   "devDependencies": {
